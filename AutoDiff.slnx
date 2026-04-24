@@ -1,0 +1,20 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/AutoDiff.Core/AutoDiff.Core.csproj" />
+    <Project Path="src/AutoDiff.Forward/AutoDiff.Forward.csproj" />
+    <Project Path="src/AutoDiff.Implicit/AutoDiff.Implicit.csproj" />
+    <Project Path="src/AutoDiff.JVP/AutoDiff.JVP.csproj" />
+    <Project Path="src/AutoDiff.Reverse/AutoDiff.Reverse.csproj" />
+    <Project Path="src/AutoDiff.Symbolic/AutoDiff.Symbolic.csproj" />
+    <Project Path="src/AutoDiff.Generator/AutoDiff.Generator.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/AutoDiff.Tests.Unit/AutoDiff.Tests.Unit.csproj" />
+    <Project Path="tests/AutoDiff.Tests.Generator/AutoDiff.Tests.Generator.csproj" />
+    <Project Path="tests/AutoDiff.Tests.Benchmarks/AutoDiff.Tests.Benchmarks.csproj" />
+  </Folder>
+  <Folder Name="/samples/">
+    <Project Path="samples/AutoDiff.Samples.Optimization/AutoDiff.Samples.Optimization.csproj" />
+    <Project Path="samples/AutoDiff.Samples.NeuralNet/AutoDiff.Samples.NeuralNet.csproj" />
+  </Folder>
+</Solution>

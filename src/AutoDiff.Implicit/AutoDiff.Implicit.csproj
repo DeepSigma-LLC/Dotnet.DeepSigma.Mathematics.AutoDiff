@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <IsAotCompatible>true</IsAotCompatible>
+    <LangVersion>latest</LangVersion>
+    <RootNamespace>AutoDiff.Implicit</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AutoDiff.Core\AutoDiff.Core.csproj" />
+    <ProjectReference Include="..\AutoDiff.Forward\AutoDiff.Forward.csproj" />
+    <ProjectReference Include="..\AutoDiff.Reverse\AutoDiff.Reverse.csproj" />
+    <ProjectReference Include="..\AutoDiff.Symbolic\AutoDiff.Symbolic.csproj" />
+  </ItemGroup>
+</Project>

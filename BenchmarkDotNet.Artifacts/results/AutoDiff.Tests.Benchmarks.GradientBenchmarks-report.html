@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>AutoDiff.Tests.Benchmarks.GradientBenchmarks-20260424-144712</title>
+
+<style type="text/css">
+	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+	td, th { padding: 6px 13px; border: 1px solid #ddd; text-align: right; }
+	tr { background-color: #fff; border-top: 1px solid #ccc; }
+	tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet v0.14.0, Windows 11 (10.0.26100.8246)
+11th Gen Intel Core i7-11800H 2.30GHz, 1 CPU, 16 logical and 8 physical cores
+.NET SDK 10.0.202
+  [Host]     : .NET 10.0.6 (10.0.626.17701), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI
+  Job-VYDNZW : .NET 10.0.6 (10.0.626.17701), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI
+</code></pre>
+<pre><code>IterationCount=3  LaunchCount=1  WarmupCount=1  
+</code></pre>
+
+<table>
+<thead><tr><th>Method             </th><th>N</th><th>Mean    </th><th>Error  </th><th>StdDev</th><th>Ratio</th><th>RatioSD</th><th>Gen0</th><th>Gen1</th><th>Gen2</th><th>Allocated</th><th>Alloc Ratio</th>
+</tr>
+</thead><tbody><tr><td>Reverse_QuadraticGradient</td><td>10</td><td>230.3 ns</td><td>99.10 ns</td><td>5.43 ns</td><td>1.00</td><td>0.03</td><td>0.0076</td><td>-</td><td>-</td><td>288 B</td><td>1.00</td>
+</tr><tr><td>Reverse_NoPool</td><td>10</td><td>680.4 ns</td><td>492.78 ns</td><td>27.01 ns</td><td>2.96</td><td>0.12</td><td>0.1001</td><td>-</td><td>-</td><td>3728 B</td><td>12.94</td>
+</tr><tr><td>Forward_QuadraticGradient</td><td>10</td><td>414.3 ns</td><td>500.79 ns</td><td>27.45 ns</td><td>1.80</td><td>0.11</td><td>0.0520</td><td>-</td><td>-</td><td>1944 B</td><td>6.75</td>
+</tr><tr><td>Reverse_QuadraticGradient</td><td>100</td><td>2,094.4 ns</td><td>160.64 ns</td><td>8.81 ns</td><td>1.00</td><td>0.01</td><td>0.0648</td><td>-</td><td>-</td><td>2448 B</td><td>1.00</td>
+</tr><tr><td>Reverse_NoPool</td><td>100</td><td>5,861.8 ns</td><td>1,169.08 ns</td><td>64.08 ns</td><td>2.80</td><td>0.03</td><td>1.0071</td><td>0.0534</td><td>-</td><td>36128 B</td><td>14.76</td>
+</tr><tr><td>Forward_QuadraticGradient</td><td>100</td><td>36,794.0 ns</td><td>1,530.71 ns</td><td>83.90 ns</td><td>17.57</td><td>0.07</td><td>6.7139</td><td>0.0610</td><td>0.0610</td><td>-</td><td>0.00</td>
+</tr><tr><td>Reverse_QuadraticGradient</td><td>1000</td><td>22,679.8 ns</td><td>1,071.85 ns</td><td>58.75 ns</td><td>1.00</td><td>0.00</td><td>0.6409</td><td>-</td><td>-</td><td>24048 B</td><td>1.00</td>
+</tr><tr><td>Reverse_NoPool</td><td>1000</td><td>116,153.8 ns</td><td>22,434.41 ns</td><td>1,229.71 ns</td><td>5.12</td><td>0.05</td><td>99.9756</td><td>99.9756</td><td>99.9756</td><td>360162 B</td><td>14.98</td>
+</tr><tr><td>Forward_QuadraticGradient</td><td>1000</td><td>2,385,395.8 ns</td><td>209,048.74 ns</td><td>11,458.67 ns</td><td>105.18</td><td>0.50</td><td>6101.5625</td><td>-</td><td>-</td><td>16032026 B</td><td>666.67</td>
+</tr></tbody></table>
+</body>
+</html>
