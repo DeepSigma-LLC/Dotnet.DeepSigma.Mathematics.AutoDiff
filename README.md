@@ -307,7 +307,7 @@ samples/
 | Choice | Why |
 |---|---|
 | **`struct` for `DualNumber<T>` and `Var<T>`** | No heap allocation in tight loops; tape holds all mutable state. |
-| **Flat `TapeNode<T>[]` array** | Cache-coherent backward sweep — measurably faster than linked-list-of-objects layouts. |
+| **Flat `ComputationTapeNode<T>[]` array** | Cache-coherent backward sweep — measurably faster than linked-list-of-objects layouts. |
 | **Thread-local `ComputationTapePool<T>`** | 52× cheaper than fresh allocation in the rent/return benchmark. |
 | **`record` for `Expression<T>`** | Structural equality drives the `Simplifier` fixed-point loop for free. |
 | **Generic over `IFloatingPoint<T>`** | Static abstract members → AOT-safe, no boxing, works with `double`/`float`/`Half`. |
