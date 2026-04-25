@@ -208,7 +208,7 @@ public sealed class DifferentiableGenerator : IIncrementalGenerator
             : "(" + string.Join(", ", Enumerable.Range(0, n).Select(i => $"__v{i}.Gradient")) + ")";
 
         return $$"""
-                public static {{returnType}} {{gradName}}({{paramList}})
+                public static {{returnType}} Grad_{{gradName}}({{paramList}})
                 {
                     using var __tape = TapePool<{{T}}>.Rent();
                     {{varDecls}}
@@ -237,7 +237,7 @@ public sealed class DifferentiableGenerator : IIncrementalGenerator
             : "(" + string.Join(", ", Enumerable.Range(0, n).Select(i => $"__grad[{i}]")) + ")";
 
         return $$"""
-                public static {{returnType}} {{gradName}}({{paramList}})
+                public static {{returnType}} Grad_{{gradName}}({{paramList}})
                 {
                     {{T}}[] __grad = new {{T}}[{{n}}];
                     for (int __i = 0; __i < {{n}}; __i++)

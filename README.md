@@ -19,7 +19,7 @@ Gradient-based optimization, neural-net experimentation, and scientific computin
 - **Implicit differentiation** — `dy/dx` from a constraint `F(x, y) = 0` via the implicit function theorem.
 - **Higher-order** — `HyperDual<T>` for second derivatives in a single forward pass.
 - **NaN / Inf guards** — opt-in detection during the backward sweep, with optional diagnostic trees pinpointing the originating node.
-- **Source generator** — `[Differentiable]` emits `Grad_Foo` wrappers automatically with full diagnostic feedback (8 analyzer rules).
+- **Source generator** — `[Differentiable]` emits a `Grad_*` companion taking plain `T` parameters, with full diagnostic feedback (8 analyzer rules).
 - **Native AOT compatible** — `IsAotCompatible=true` across all libraries; analyzers run clean.
 - **Generic math** — works with any `IFloatingPoint<T>` (`double`, `float`, `Half`, ...).
 
@@ -44,21 +44,18 @@ The library is split into focused packages so embedded / real-time consumers can
 
 | Package | Contents |
 |---|---|
-| `AutoDiff.Core` | Interfaces, generic-math helpers, NaN/Inf guards, diagnostics |
-| `AutoDiff.Forward` | `DualNumber<T>`, `DualMath<T>`, `ForwardDiff<T>`, `HyperDual<T>` |
-| `AutoDiff.Reverse` | `Tape<T>`, `Var<T>`, `ReverseMath<T>`, `TapePool<T>` |
-| `AutoDiff.Symbolic` | `Expr<T>` tree, `Simplifier`, `SymbolicDiff` |
-| `AutoDiff.JVP` | `JVP.Compute`, `VJP.Compute`, `VJP.Jacobian` |
-| `AutoDiff.Implicit` | `ImplicitDiff.Derivative`, `Gradient`, `DerivativeSymbolic` |
-| `AutoDiff.Generator` | `[Differentiable]` source generator (analyzer; dev-time only) |
-| `AutoDiff` | Meta-package referencing all of the above |
+| `DeepSigma.Mathematics.AutoDiff.Core` | Interfaces, generic-math helpers, NaN/Inf guards, diagnostics |
+| `DeepSigma.Mathematics.AutoDiff.Forward` | `DualNumber<T>`, `DualMath<T>`, `ForwardDiff<T>`, `HyperDual<T>` |
+| `DeepSigma.Mathematics.AutoDiff.Reverse` | `Tape<T>`, `Var<T>`, `ReverseMath<T>`, `TapePool<T>` |
+| `DeepSigma.Mathematics.AutoDiff.Symbolic` | `Expr<T>` tree, `Simplifier`, `SymbolicDiff` |
+| `DeepSigma.Mathematics.AutoDiff.JVP` | `JVP.Compute`, `VJP.Compute`, `VJP.Jacobian` |
+| `DeepSigma.Mathematics.AutoDiff.Implicit` | `ImplicitDiff.Derivative`, `Gradient`, `DerivativeSymbolic` |
+| `DeepSigma.Mathematics.AutoDiff.Generator` | `[Differentiable]` source generator (analyzer; dev-time only) |
 
-```bash
-dotnet add package AutoDiff
-# or pick what you need:
-dotnet add package AutoDiff.Forward
-dotnet add package AutoDiff.Reverse
-```
+> **Note:** NuGet packages are not yet published — see [Roadmap](#roadmap). To use locally, clone the repo and add project references:
+> ```bash
+> dotnet add reference src/AutoDiff.Reverse/DeepSigma.Mathematics.AutoDiff.Reverse.csproj
+> ```
 
 ---
 
@@ -67,7 +64,7 @@ dotnet add package AutoDiff.Reverse
 ### Forward mode — single-input derivative
 
 ```csharp
-using AutoDiff.Forward;
+using DeepSigma.Mathematics.AutoDiff.Forward;
 
 // d/dx [sin(x²) + x³] at x = 1.5
 var d = ForwardDiff<double>.Derivative(
@@ -90,7 +87,7 @@ var grad = ForwardDiff<double>.Gradient(
 For loss functions and any case where input dim ≫ output dim, reverse mode wins decisively (see the benchmark above).
 
 ```csharp
-using AutoDiff.Reverse;
+using DeepSigma.Mathematics.AutoDiff.Reverse;
 
 using var tape = TapePool<double>.Rent();
 var x = tape.Variable(2.0, "x");
@@ -114,11 +111,11 @@ var grad = ReverseDiff<double>.Gradient(
 
 ### Source generator — `[Differentiable]`
 
-Annotate a method that takes `Var<T>` (reverse) or `DualNumber<T>` (forward) and the generator emits a sibling `Grad_Foo` taking plain `T`:
+Annotate a method that takes `Var<T>` (reverse) or `DualNumber<T>` (forward) and the generator emits a sibling `Grad_*` method taking plain `T` parameters. The `Grad_` prefix keeps the original (typed) method and the gradient entrypoint visually distinct at every call site:
 
 ```csharp
-using AutoDiff;
-using AutoDiff.Reverse;
+using DeepSigma.Mathematics.AutoDiff;
+using DeepSigma.Mathematics.AutoDiff.Reverse;
 
 public static partial class Demo
 {
@@ -150,7 +147,7 @@ The generator reports clear diagnostics for misuse: missing `partial`, non-stati
 ### Symbolic differentiation
 
 ```csharp
-using AutoDiff.Symbolic;
+using DeepSigma.Mathematics.AutoDiff.Symbolic;
 
 var x = Sym.Var<double>("x");
 var f = Sym.Sin(x * x) + Sym.Exp(x);
@@ -166,7 +163,7 @@ The `Simplifier` runs a fixed-point loop applying constant folding, identity/zer
 ### Implicit differentiation
 
 ```csharp
-using AutoDiff.Implicit;
+using DeepSigma.Mathematics.AutoDiff.Implicit;
 
 // Unit circle: x² + y² = 1, so dy/dx = -x/y.
 var dyDx = ImplicitDiff.Derivative<double>(
@@ -181,7 +178,7 @@ Throws `ImplicitDerivativeException` when `|∂F/∂y|` is below the singularity
 ### Jacobian-vector / vector-Jacobian products
 
 ```csharp
-using AutoDiff.JVP;
+using DeepSigma.Mathematics.AutoDiff.JVP;
 
 // JVP: J·v in one forward pass
 var jv = JVP.Compute<double>(
@@ -229,8 +226,8 @@ catch (GradientNaNException ex)
 ## Worked example: Rosenbrock minimization
 
 ```csharp
-using AutoDiff;
-using AutoDiff.Reverse;
+using DeepSigma.Mathematics.AutoDiff;
+using DeepSigma.Mathematics.AutoDiff.Reverse;
 
 double x = -1.2, y = 1.0, lr = 1e-3;
 for (int step = 0; step <= 5000; step++)
@@ -276,24 +273,24 @@ epoch 4000  loss=0.003582
 ### Reference graph
 
 ```
-AutoDiff.Core ◀── AutoDiff.Forward ◀── AutoDiff.Implicit
-              ◀── AutoDiff.Reverse  ◀── AutoDiff.JVP
-              ◀── AutoDiff.Symbolic ◀──┘
+DeepSigma.Mathematics.AutoDiff.Core ◀── DeepSigma.Mathematics.AutoDiff.Forward ◀── DeepSigma.Mathematics.AutoDiff.Implicit
+                                    ◀── DeepSigma.Mathematics.AutoDiff.Reverse  ◀── DeepSigma.Mathematics.AutoDiff.JVP
+                                    ◀── DeepSigma.Mathematics.AutoDiff.Symbolic ◀──┘
 
-AutoDiff.Generator   (analyzer-only; references Roslyn)
+DeepSigma.Mathematics.AutoDiff.Generator   (analyzer-only; references Roslyn)
 ```
 
 ### Repository layout
 
 ```
 src/
-  AutoDiff.Core/         Interfaces, generic-math helpers, NaNGuard, diagnostics
-  AutoDiff.Forward/      DualNumber<T>, DualMath<T>, ForwardDiff<T>, HyperDual<T>
-  AutoDiff.Reverse/      Tape<T>, Var<T>, ReverseMath<T>, TapePool<T>
-  AutoDiff.Symbolic/     Expr<T> tree, Simplifier, SymbolicDiff
-  AutoDiff.JVP/          JVP.Compute, VJP.Compute, VJP.Jacobian
-  AutoDiff.Implicit/     ImplicitDiff
-  AutoDiff.Generator/    [Differentiable] Roslyn incremental generator
+  AutoDiff.Core/         DeepSigma.Mathematics.AutoDiff.Core       — Interfaces, generic-math helpers, NaNGuard, diagnostics
+  AutoDiff.Forward/      DeepSigma.Mathematics.AutoDiff.Forward     — DualNumber<T>, DualMath<T>, ForwardDiff<T>, HyperDual<T>
+  AutoDiff.Reverse/      DeepSigma.Mathematics.AutoDiff.Reverse     — Tape<T>, Var<T>, ReverseMath<T>, TapePool<T>
+  AutoDiff.Symbolic/     DeepSigma.Mathematics.AutoDiff.Symbolic    — Expr<T> tree, Simplifier, SymbolicDiff
+  AutoDiff.JVP/          DeepSigma.Mathematics.AutoDiff.JVP         — JVP.Compute, VJP.Compute, VJP.Jacobian
+  AutoDiff.Implicit/     DeepSigma.Mathematics.AutoDiff.Implicit    — ImplicitDiff
+  AutoDiff.Generator/    DeepSigma.Mathematics.AutoDiff.Generator   — [Differentiable] Roslyn incremental generator
 
 tests/
   AutoDiff.Tests.Unit/         xUnit tests (118 passing) with finite-diff cross-checks
@@ -331,7 +328,7 @@ dotnet build samples/AutoDiff.Samples.NeuralNet \
 
 Full native publish (`-p:PublishAot=true`) requires the platform linker (Visual Studio "Desktop development with C++" workload on Windows; `clang` on Linux/macOS).
 
-The `ExprCompiler` path that uses `Expression.Lambda` is gated behind `[RequiresDynamicCode]`; `ExprInterpreter` is the AOT-safe default.
+The symbolic `ExprInterpreter` is the AOT-safe expression evaluator.
 
 ---
 
