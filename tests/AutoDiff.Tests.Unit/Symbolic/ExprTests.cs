@@ -1,6 +1,6 @@
-using AutoDiff.Symbolic;
+using DeepSigma.Mathematics.AutoDiff.Symbolic;
 
-namespace AutoDiff.Tests.Unit.Symbolic;
+namespace DeepSigma.Mathematics.AutoDiff.Tests.UnitSymbolic;
 
 public class ExprTests
 {

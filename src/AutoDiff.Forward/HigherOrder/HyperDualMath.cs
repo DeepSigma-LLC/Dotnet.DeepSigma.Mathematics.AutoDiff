@@ -1,8 +1,8 @@
 using System.Numerics;
 using System.Runtime.CompilerServices;
-using AutoDiff.Core;
+using DeepSigma.Mathematics.AutoDiff.Core;
 
-namespace AutoDiff.Forward;
+namespace DeepSigma.Mathematics.AutoDiff.Forward;
 
 /// <summary>Elementary functions for HyperDual&lt;T&gt;.</summary>
 public static class HyperDualMath<T>

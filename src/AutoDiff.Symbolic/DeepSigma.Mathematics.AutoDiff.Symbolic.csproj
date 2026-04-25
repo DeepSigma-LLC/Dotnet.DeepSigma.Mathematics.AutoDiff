@@ -6,12 +6,9 @@
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <IsAotCompatible>true</IsAotCompatible>
     <LangVersion>latest</LangVersion>
-    <RootNamespace>AutoDiff.Implicit</RootNamespace>
+    <RootNamespace>DeepSigma.Mathematics.AutoDiff.Symbolic</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AutoDiff.Core\AutoDiff.Core.csproj" />
-    <ProjectReference Include="..\AutoDiff.Forward\AutoDiff.Forward.csproj" />
-    <ProjectReference Include="..\AutoDiff.Reverse\AutoDiff.Reverse.csproj" />
-    <ProjectReference Include="..\AutoDiff.Symbolic\AutoDiff.Symbolic.csproj" />
+    <ProjectReference Include="..\AutoDiff.Core\DeepSigma.Mathematics.AutoDiff.Core.csproj" />
   </ItemGroup>
 </Project>

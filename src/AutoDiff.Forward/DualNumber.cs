@@ -2,7 +2,7 @@ using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 
-namespace AutoDiff.Forward;
+namespace DeepSigma.Mathematics.AutoDiff.Forward;
 
 /// <summary>
 /// Dual number a + bε where ε²=0. The dual part b carries the directional derivative.

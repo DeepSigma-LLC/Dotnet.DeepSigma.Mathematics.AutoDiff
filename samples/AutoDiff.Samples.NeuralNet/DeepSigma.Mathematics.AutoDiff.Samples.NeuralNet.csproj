@@ -8,6 +8,6 @@
     <IsAotCompatible>true</IsAotCompatible>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\AutoDiff.Reverse\AutoDiff.Reverse.csproj" />
+    <ProjectReference Include="..\..\src\AutoDiff.Reverse\DeepSigma.Mathematics.AutoDiff.Reverse.csproj" />
   </ItemGroup>
 </Project>

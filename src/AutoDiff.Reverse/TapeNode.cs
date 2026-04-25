@@ -1,6 +1,6 @@
 using System.Numerics;
 
-namespace AutoDiff.Reverse;
+namespace DeepSigma.Mathematics.AutoDiff.Reverse;
 
 internal struct TapeNode<T> where T : IFloatingPoint<T>
 {

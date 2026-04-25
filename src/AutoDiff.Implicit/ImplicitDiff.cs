@@ -1,8 +1,8 @@
 using System.Numerics;
-using AutoDiff.Reverse;
-using AutoDiff.Symbolic;
+using DeepSigma.Mathematics.AutoDiff.Reverse;
+using DeepSigma.Mathematics.AutoDiff.Symbolic;
 
-namespace AutoDiff.Implicit;
+namespace DeepSigma.Mathematics.AutoDiff.Implicit;
 
 /// <summary>
 /// Implicit function differentiation.

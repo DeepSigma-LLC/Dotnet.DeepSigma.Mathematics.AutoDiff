@@ -2,7 +2,7 @@ using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 
-namespace AutoDiff.Reverse;
+namespace DeepSigma.Mathematics.AutoDiff.Reverse;
 
 /// <summary>
 /// A variable on a tape. Immutable handle pairing a Tape with a node ID.
@@ -67,4 +67,6 @@ public readonly struct Var<T>
     public static Var<T> operator /(T a, Var<T> b) => b.Tape.RecordDivScalarLeft(a, b);
 
     public override string ToString() => $"Var(value={Value}, grad={Gradient})";
+
+
 }

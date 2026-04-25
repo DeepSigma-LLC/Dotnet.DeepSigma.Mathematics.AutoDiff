@@ -1,4 +1,4 @@
-namespace AutoDiff.Tests.Generator;
+namespace DeepSigma.Mathematics.AutoDiff.Tests.Generator;
 
 public class DiagnosticsTests
 {
@@ -118,8 +118,8 @@ public class DiagnosticsTests
     public void AD008_ModeMismatch()
     {
         var src = """
-            using AutoDiff;
-            using AutoDiff.Reverse;
+            using DeepSigma.Mathematics.AutoDiff;
+            using DeepSigma.Mathematics.AutoDiff.Reverse;
             public partial class C
             {
                 [Differentiable(Mode = DiffMode.Forward)]
@@ -134,8 +134,8 @@ public class DiagnosticsTests
     public void Valid_NoDiagnostics()
     {
         var src = """
-            using AutoDiff;
-            using AutoDiff.Reverse;
+            using DeepSigma.Mathematics.AutoDiff;
+            using DeepSigma.Mathematics.AutoDiff.Reverse;
             public partial class C
             {
                 [Differentiable]

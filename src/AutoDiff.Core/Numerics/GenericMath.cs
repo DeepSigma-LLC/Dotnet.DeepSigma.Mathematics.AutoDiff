@@ -1,7 +1,7 @@
 using System.Numerics;
 using System.Runtime.CompilerServices;
 
-namespace AutoDiff.Core;
+namespace DeepSigma.Mathematics.AutoDiff.Core;
 
 /// <summary>
 /// Helpers for generic numeric constants that can't be expressed as literals.

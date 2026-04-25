@@ -1,6 +1,6 @@
-using AutoDiff.Reverse;
+using DeepSigma.Mathematics.AutoDiff.Reverse;
 
-namespace AutoDiff.Tests.Unit.Reverse;
+namespace DeepSigma.Mathematics.AutoDiff.Tests.UnitReverse;
 
 public class TapeTests
 {

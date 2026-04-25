@@ -1,6 +1,6 @@
 using System.Numerics;
 
-namespace AutoDiff.Symbolic;
+namespace DeepSigma.Mathematics.AutoDiff.Symbolic;
 
 /// <summary>
 /// Runs <see cref="Expr{T}.Simplify"/> in a fixed-point loop until the structure stops changing.

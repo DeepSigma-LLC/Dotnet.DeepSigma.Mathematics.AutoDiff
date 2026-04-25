@@ -1,6 +1,6 @@
 using System.Numerics;
 
-namespace AutoDiff.Symbolic;
+namespace DeepSigma.Mathematics.AutoDiff.Symbolic;
 
 /// <summary>
 /// AOT-safe interpreter for Expr&lt;T&gt; trees. Walks the tree recursively via virtual dispatch

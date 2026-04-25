@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace AutoDiff.Core;
+namespace DeepSigma.Mathematics.AutoDiff.Core;
 
 public sealed record GradientDiagnostics
 {

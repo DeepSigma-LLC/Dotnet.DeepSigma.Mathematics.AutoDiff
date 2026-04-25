@@ -6,6 +6,6 @@
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <IsAotCompatible>true</IsAotCompatible>
     <LangVersion>latest</LangVersion>
-    <RootNamespace>AutoDiff.Core</RootNamespace>
+    <RootNamespace>DeepSigma.Mathematics.AutoDiff.Core</RootNamespace>
   </PropertyGroup>
 </Project>

@@ -1,5 +1,5 @@
-using AutoDiff;
-using AutoDiff.Reverse;
+using DeepSigma.Mathematics.AutoDiff;
+using DeepSigma.Mathematics.AutoDiff.Reverse;
 
 // Gradient descent on Rosenbrock: f(x,y) = (1-x)² + 100(y-x²)²
 // Minimum at (1, 1), f = 0.
@@ -10,7 +10,7 @@ var lr = 1e-3;
 
 for (int step = 0; step <= 5000; step++)
 {
-    var (dx, dy) = Demo.Grad_Rosenbrock(x, y);
+    var (dx, dy) = Demo.Rosenbrock(x, y);
     if (step % 1000 == 0)
         Console.WriteLine($"step={step,5}  x={x:F6}  y={y:F6}  f={Demo.Eval(x, y):F6}");
     x -= lr * dx;

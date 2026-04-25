@@ -1,6 +1,6 @@
 using System.Numerics;
 
-namespace AutoDiff.Core;
+namespace DeepSigma.Mathematics.AutoDiff.Core;
 
 public interface ITape<T> where T : IFloatingPoint<T>
 {

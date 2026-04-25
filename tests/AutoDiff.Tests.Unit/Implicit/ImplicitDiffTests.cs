@@ -1,8 +1,8 @@
-using AutoDiff.Implicit;
-using AutoDiff.Reverse;
-using AutoDiff.Symbolic;
+using DeepSigma.Mathematics.AutoDiff.Implicit;
+using DeepSigma.Mathematics.AutoDiff.Reverse;
+using DeepSigma.Mathematics.AutoDiff.Symbolic;
 
-namespace AutoDiff.Tests.Unit.ImplicitTests;
+namespace DeepSigma.Mathematics.AutoDiff.Tests.UnitImplicitTests;
 
 public class ImplicitDiffTests
 {

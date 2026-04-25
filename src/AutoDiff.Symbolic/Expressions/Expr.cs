@@ -1,6 +1,6 @@
 using System.Numerics;
 
-namespace AutoDiff.Symbolic;
+namespace DeepSigma.Mathematics.AutoDiff.Symbolic;
 
 /// <summary>
 /// Base type for symbolic expression trees. Records provide structural equality

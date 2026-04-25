@@ -1,8 +1,8 @@
 using System.Numerics;
 using System.Runtime.CompilerServices;
-using AutoDiff.Core;
+using DeepSigma.Mathematics.AutoDiff.Core;
 
-namespace AutoDiff.Forward;
+namespace DeepSigma.Mathematics.AutoDiff.Forward;
 
 /// <summary>
 /// Elementary functions for DualNumber&lt;T&gt;. Each follows f(a+bε) = f(a) + b·f'(a)ε.

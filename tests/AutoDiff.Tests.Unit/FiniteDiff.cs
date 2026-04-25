@@ -1,4 +1,4 @@
-namespace AutoDiff.Tests.Unit;
+namespace DeepSigma.Mathematics.AutoDiff.Tests.Unit;
 
 /// <summary>Numerical gradient checker via central finite differences.</summary>
 internal static class FiniteDiff

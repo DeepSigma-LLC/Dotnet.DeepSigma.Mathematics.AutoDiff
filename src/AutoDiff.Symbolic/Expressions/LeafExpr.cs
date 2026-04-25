@@ -1,6 +1,6 @@
 using System.Numerics;
 
-namespace AutoDiff.Symbolic;
+namespace DeepSigma.Mathematics.AutoDiff.Symbolic;
 
 public sealed record ConstExpr<T>(T Value) : Expr<T> where T : IFloatingPoint<T>
 {

@@ -1,8 +1,8 @@
-using AutoDiff;
-using AutoDiff.Reverse;
-using AutoDiff.Forward;
+using DeepSigma.Mathematics.AutoDiff;
+using DeepSigma.Mathematics.AutoDiff.Reverse;
+using DeepSigma.Mathematics.AutoDiff.Forward;
 
-namespace AutoDiff.Tests.Unit.Generator;
+namespace DeepSigma.Mathematics.AutoDiff.Tests.UnitGenerator;
 
 public static partial class GenSubjects
 {
@@ -19,7 +19,7 @@ public class GeneratorIntegrationTests
     [Fact]
     public void Reverse_GeneratedGradientMatchesAnalytical()
     {
-        var (dx, dy) = GenSubjects.Grad_Quad(3.0, 4.0);
+        var (dx, dy) = GenSubjects.Quad(3.0, 4.0);
         Assert.Equal(6.0, dx, 10);
         Assert.Equal(8.0, dy, 10);
     }
@@ -28,7 +28,7 @@ public class GeneratorIntegrationTests
     public void Forward_GeneratedGradientMatchesAnalytical()
     {
         // d/dx [x³] = 3x²
-        var dx = GenSubjects.Grad_CubicForward(2.0);
+        var dx = GenSubjects.CubicForward(2.0);
         Assert.Equal(12.0, dx, 10);
     }
 }

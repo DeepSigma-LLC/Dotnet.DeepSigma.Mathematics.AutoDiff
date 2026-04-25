@@ -1,6 +1,6 @@
 using System.Numerics;
 
-namespace AutoDiff.Reverse;
+namespace DeepSigma.Mathematics.AutoDiff.Reverse;
 
 /// <summary>
 /// Convenience API for computing gradients using reverse-mode AD.

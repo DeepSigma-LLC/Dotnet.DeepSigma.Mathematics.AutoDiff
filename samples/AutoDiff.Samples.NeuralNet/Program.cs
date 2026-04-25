@@ -1,4 +1,4 @@
-using AutoDiff.Reverse;
+using DeepSigma.Mathematics.AutoDiff.Reverse;
 
 // Tiny MLP learning XOR: 2 → 4 → 1 with tanh hidden, sigmoid output, MSE loss.
 

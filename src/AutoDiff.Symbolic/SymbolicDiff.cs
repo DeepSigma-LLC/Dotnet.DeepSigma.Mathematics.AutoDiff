@@ -1,6 +1,6 @@
 using System.Numerics;
 
-namespace AutoDiff.Symbolic;
+namespace DeepSigma.Mathematics.AutoDiff.Symbolic;
 
 /// <summary>
 /// Convenience wrappers for symbolic differentiation. The real work lives on each

@@ -1,8 +1,8 @@
 using System.Numerics;
-using AutoDiff.Forward;
-using AutoDiff.Reverse;
+using DeepSigma.Mathematics.AutoDiff.Forward;
+using DeepSigma.Mathematics.AutoDiff.Reverse;
 
-namespace AutoDiff.JVP;
+namespace DeepSigma.Mathematics.AutoDiff.JVP;
 
 /// <summary>
 /// Vector-Jacobian product (pullback): v^T·J(f) via reverse mode with a custom cotangent seed.

@@ -1,6 +1,6 @@
 using System.Numerics;
 
-namespace AutoDiff.Forward;
+namespace DeepSigma.Mathematics.AutoDiff.Forward;
 
 /// <summary>
 /// Convenience API for computing derivatives and gradients using forward-mode AD.

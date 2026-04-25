@@ -2,7 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 
-namespace AutoDiff.Core;
+namespace DeepSigma.Mathematics.AutoDiff.Core;
 
 public static class NaNGuard
 {

@@ -13,7 +13,7 @@
     <PackageReference Include="BenchmarkDotNet" Version="0.14.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\AutoDiff.Forward\AutoDiff.Forward.csproj" />
-    <ProjectReference Include="..\..\src\AutoDiff.Reverse\AutoDiff.Reverse.csproj" />
+    <ProjectReference Include="..\..\src\AutoDiff.Forward\DeepSigma.Mathematics.AutoDiff.Forward.csproj" />
+    <ProjectReference Include="..\..\src\AutoDiff.Reverse\DeepSigma.Mathematics.AutoDiff.Reverse.csproj" />
   </ItemGroup>
 </Project>

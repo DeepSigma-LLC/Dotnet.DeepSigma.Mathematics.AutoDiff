@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="6.0.4" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.4" />
+  </ItemGroup>
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\AutoDiff.Forward\DeepSigma.Mathematics.AutoDiff.Forward.csproj" />
+    <ProjectReference Include="..\..\src\AutoDiff.Reverse\DeepSigma.Mathematics.AutoDiff.Reverse.csproj" />
+    <ProjectReference Include="..\..\src\AutoDiff.Symbolic\DeepSigma.Mathematics.AutoDiff.Symbolic.csproj" />
+    <ProjectReference Include="..\..\src\AutoDiff.JVP\DeepSigma.Mathematics.AutoDiff.JVP.csproj" />
+    <ProjectReference Include="..\..\src\AutoDiff.Implicit\DeepSigma.Mathematics.AutoDiff.Implicit.csproj" />
+    <ProjectReference Include="..\..\src\AutoDiff.Generator\DeepSigma.Mathematics.AutoDiff.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+  </ItemGroup>
+</Project>

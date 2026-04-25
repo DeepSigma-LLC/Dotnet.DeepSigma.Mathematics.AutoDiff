@@ -1,10 +1,10 @@
 using System.Collections.Immutable;
 using System.Reflection;
-using AutoDiff.Generator;
+using DeepSigma.Mathematics.AutoDiff.Generator;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
-namespace AutoDiff.Tests.Generator;
+namespace DeepSigma.Mathematics.AutoDiff.Tests.Generator;
 
 internal static class GeneratorHarness
 {

@@ -1,8 +1,8 @@
 using System.Numerics;
 using System.Runtime.CompilerServices;
-using AutoDiff.Core;
+using DeepSigma.Mathematics.AutoDiff.Core;
 
-namespace AutoDiff.Reverse;
+namespace DeepSigma.Mathematics.AutoDiff.Reverse;
 
 /// <summary>
 /// Elementary functions for Var&lt;T&gt;. Each records the primal value and local derivative weight

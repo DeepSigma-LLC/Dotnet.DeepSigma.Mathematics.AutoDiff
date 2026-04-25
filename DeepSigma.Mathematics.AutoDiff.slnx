@@ -1,0 +1,20 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/AutoDiff.Core/DeepSigma.Mathematics.AutoDiff.Core.csproj" />
+    <Project Path="src/AutoDiff.Forward/DeepSigma.Mathematics.AutoDiff.Forward.csproj" />
+    <Project Path="src/AutoDiff.Generator/DeepSigma.Mathematics.AutoDiff.Generator.csproj" />
+    <Project Path="src/AutoDiff.Implicit/DeepSigma.Mathematics.AutoDiff.Implicit.csproj" />
+    <Project Path="src/AutoDiff.JVP/DeepSigma.Mathematics.AutoDiff.JVP.csproj" />
+    <Project Path="src/AutoDiff.Reverse/DeepSigma.Mathematics.AutoDiff.Reverse.csproj" />
+    <Project Path="src/AutoDiff.Symbolic/DeepSigma.Mathematics.AutoDiff.Symbolic.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/AutoDiff.Tests.Benchmarks/DeepSigma.Mathematics.AutoDiff.Tests.Benchmarks.csproj" />
+    <Project Path="tests/AutoDiff.Tests.Generator/DeepSigma.Mathematics.AutoDiff.Tests.Generator.csproj" />
+    <Project Path="tests/AutoDiff.Tests.Unit/DeepSigma.Mathematics.AutoDiff.Tests.Unit.csproj" />
+  </Folder>
+  <Folder Name="/samples/">
+    <Project Path="samples/AutoDiff.Samples.NeuralNet/DeepSigma.Mathematics.AutoDiff.Samples.NeuralNet.csproj" />
+    <Project Path="samples/AutoDiff.Samples.Optimization/DeepSigma.Mathematics.AutoDiff.Samples.Optimization.csproj" />
+  </Folder>
+</Solution>

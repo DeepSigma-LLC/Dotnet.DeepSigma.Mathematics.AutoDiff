@@ -1,8 +1,8 @@
 using System.Numerics;
 using System.Runtime.CompilerServices;
-using AutoDiff.Core;
+using DeepSigma.Mathematics.AutoDiff.Core;
 
-namespace AutoDiff.Reverse;
+namespace DeepSigma.Mathematics.AutoDiff.Reverse;
 
 /// <summary>
 /// Records a forward computation and runs the reverse (backward) pass to accumulate gradients.

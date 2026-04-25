@@ -2,7 +2,7 @@ using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 
-namespace AutoDiff.Forward;
+namespace DeepSigma.Mathematics.AutoDiff.Forward;
 
 /// <summary>
 /// Hyper-dual number a + b·ε₁ + c·ε₂ + d·ε₁ε₂ where ε₁²=ε₂²=0.

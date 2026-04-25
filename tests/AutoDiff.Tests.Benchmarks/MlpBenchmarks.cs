@@ -1,7 +1,7 @@
-using AutoDiff.Reverse;
+using DeepSigma.Mathematics.AutoDiff.Reverse;
 using BenchmarkDotNet.Attributes;
 
-namespace AutoDiff.Tests.Benchmarks;
+namespace DeepSigma.Mathematics.AutoDiff.Tests.Benchmarks;
 
 /// <summary>
 /// 3-layer MLP forward+backward at the input/hidden sizes called out in the plan.

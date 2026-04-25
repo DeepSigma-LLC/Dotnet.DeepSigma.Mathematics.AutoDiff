@@ -6,11 +6,9 @@
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <IsAotCompatible>true</IsAotCompatible>
     <LangVersion>latest</LangVersion>
-    <RootNamespace>AutoDiff.JVP</RootNamespace>
+    <RootNamespace>DeepSigma.Mathematics.AutoDiff.Forward</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AutoDiff.Core\AutoDiff.Core.csproj" />
-    <ProjectReference Include="..\AutoDiff.Forward\AutoDiff.Forward.csproj" />
-    <ProjectReference Include="..\AutoDiff.Reverse\AutoDiff.Reverse.csproj" />
+    <ProjectReference Include="..\AutoDiff.Core\DeepSigma.Mathematics.AutoDiff.Core.csproj" />
   </ItemGroup>
 </Project>

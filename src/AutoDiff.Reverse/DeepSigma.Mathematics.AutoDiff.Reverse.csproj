@@ -6,9 +6,9 @@
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <IsAotCompatible>true</IsAotCompatible>
     <LangVersion>latest</LangVersion>
-    <RootNamespace>AutoDiff.Reverse</RootNamespace>
+    <RootNamespace>DeepSigma.Mathematics.AutoDiff.Reverse</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AutoDiff.Core\AutoDiff.Core.csproj" />
+    <ProjectReference Include="..\AutoDiff.Core\DeepSigma.Mathematics.AutoDiff.Core.csproj" />
   </ItemGroup>
 </Project>

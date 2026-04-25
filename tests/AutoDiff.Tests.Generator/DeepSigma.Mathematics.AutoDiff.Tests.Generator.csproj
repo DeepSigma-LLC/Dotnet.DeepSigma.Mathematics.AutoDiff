@@ -16,8 +16,8 @@
     <Using Include="Xunit" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\AutoDiff.Generator\AutoDiff.Generator.csproj" />
-    <ProjectReference Include="..\..\src\AutoDiff.Reverse\AutoDiff.Reverse.csproj" />
-    <ProjectReference Include="..\..\src\AutoDiff.Forward\AutoDiff.Forward.csproj" />
+    <ProjectReference Include="..\..\src\AutoDiff.Generator\DeepSigma.Mathematics.AutoDiff.Generator.csproj" />
+    <ProjectReference Include="..\..\src\AutoDiff.Reverse\DeepSigma.Mathematics.AutoDiff.Reverse.csproj" />
+    <ProjectReference Include="..\..\src\AutoDiff.Forward\DeepSigma.Mathematics.AutoDiff.Forward.csproj" />
   </ItemGroup>
 </Project>

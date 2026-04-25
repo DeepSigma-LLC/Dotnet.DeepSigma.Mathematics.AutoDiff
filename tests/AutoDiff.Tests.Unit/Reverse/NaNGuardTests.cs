@@ -1,7 +1,7 @@
-using AutoDiff.Core;
-using AutoDiff.Reverse;
+using DeepSigma.Mathematics.AutoDiff.Core;
+using DeepSigma.Mathematics.AutoDiff.Reverse;
 
-namespace AutoDiff.Tests.Unit.Reverse;
+namespace DeepSigma.Mathematics.AutoDiff.Tests.UnitReverse;
 
 public class NaNGuardTests
 {

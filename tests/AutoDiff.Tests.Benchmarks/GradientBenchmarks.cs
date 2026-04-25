@@ -1,8 +1,8 @@
-using AutoDiff.Forward;
-using AutoDiff.Reverse;
+using DeepSigma.Mathematics.AutoDiff.Forward;
+using DeepSigma.Mathematics.AutoDiff.Reverse;
 using BenchmarkDotNet.Attributes;
 
-namespace AutoDiff.Tests.Benchmarks;
+namespace DeepSigma.Mathematics.AutoDiff.Tests.Benchmarks;
 
 /// <summary>
 /// Reverse vs forward mode on f(x⃗) = Σ xᵢ². Reverse should be one pass; forward needs N passes.

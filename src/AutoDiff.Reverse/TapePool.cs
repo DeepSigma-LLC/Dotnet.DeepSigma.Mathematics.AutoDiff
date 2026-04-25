@@ -1,6 +1,6 @@
 using System.Numerics;
 
-namespace AutoDiff.Reverse;
+namespace DeepSigma.Mathematics.AutoDiff.Reverse;
 
 /// <summary>
 /// Thread-local pool of reusable Tape&lt;T&gt; instances.

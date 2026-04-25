@@ -1,8 +1,8 @@
-using AutoDiff.Forward;
-using JvpFn = AutoDiff.JVP.JVP;
-using VjpFn = AutoDiff.JVP.VJP;
+using DeepSigma.Mathematics.AutoDiff.Forward;
+using JvpFn = DeepSigma.Mathematics.AutoDiff.JVP.JVP;
+using VjpFn = DeepSigma.Mathematics.AutoDiff.JVP.VJP;
 
-namespace AutoDiff.Tests.Unit.JVPTests;
+namespace DeepSigma.Mathematics.AutoDiff.Tests.UnitJVPTests;
 
 public class JVPTests
 {

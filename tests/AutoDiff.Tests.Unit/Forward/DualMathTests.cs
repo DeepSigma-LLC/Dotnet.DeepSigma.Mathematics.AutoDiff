@@ -1,6 +1,7 @@
-using AutoDiff.Forward;
+using DeepSigma.Mathematics.AutoDiff.Forward;
+using DeepSigma.Mathematics.AutoDiff.Tests.Unit;
 
-namespace AutoDiff.Tests.Unit.Forward;
+namespace DeepSigma.Mathematics.AutoDiff.Tests.Unit.Forward;
 
 public class DualMathTests
 {

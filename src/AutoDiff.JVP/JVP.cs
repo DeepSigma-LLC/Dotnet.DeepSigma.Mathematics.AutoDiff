@@ -1,7 +1,7 @@
 using System.Numerics;
-using AutoDiff.Forward;
+using DeepSigma.Mathematics.AutoDiff.Forward;
 
-namespace AutoDiff.JVP;
+namespace DeepSigma.Mathematics.AutoDiff.JVP;
 
 /// <summary>
 /// Jacobian-vector product: J(f)·v via forward mode with a custom tangent seed.

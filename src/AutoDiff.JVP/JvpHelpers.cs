@@ -1,4 +1,4 @@
-namespace AutoDiff.JVP;
+namespace DeepSigma.Mathematics.AutoDiff.JVP;
 
 internal static class JvpHelpers
 {

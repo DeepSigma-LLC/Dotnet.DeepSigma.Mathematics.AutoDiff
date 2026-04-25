@@ -1,6 +1,6 @@
 using Microsoft.CodeAnalysis;
 
-namespace AutoDiff.Generator;
+namespace DeepSigma.Mathematics.AutoDiff.Generator;
 
 internal static class Diagnostics
 {
