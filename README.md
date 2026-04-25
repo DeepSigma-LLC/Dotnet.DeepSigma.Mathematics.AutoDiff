@@ -1,4 +1,4 @@
-# AutoDiff
+# DeepSigma.Mathematics.AutoDiff
 
 A streamlined automatic differentiation library for .NET 10 — forward mode, reverse mode, symbolic differentiation, and a `[Differentiable]` source generator. Native AOT compatible, zero runtime dependencies, generic over `IFloatingPoint<T>`.
 
