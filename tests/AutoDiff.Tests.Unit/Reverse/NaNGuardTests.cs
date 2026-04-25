@@ -37,11 +37,11 @@ public class NaNGuardTests
     [Fact]
     public void Tape_NaNGuard_LogOfZero_ThrowsWithContext()
     {
-        using var tape = TapePool<double>.Rent();
+        using var tape = ComputationTapePool<double>.Rent();
         tape.EnableNaNGuard = true;
 
         var x = tape.Variable(0.0);          // log(0) = -Inf
-        var y = ReverseMath<double>.Log(x);  // primal = -Inf
+        var y = ReverseFunctions<double>.Log(x);  // primal = -Inf
         // weight = 1/0 = Inf; backward: 1.0 * Inf → NaN guard fires
         Assert.Throws<GradientNaNException>(() => tape.Backward(y));
     }

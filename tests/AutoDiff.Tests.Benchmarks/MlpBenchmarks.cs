@@ -44,7 +44,7 @@ public class MlpBenchmarks
     [Benchmark]
     public double Mlp_ForwardBackward()
     {
-        using var tape = TapePool<double>.Rent(8192);
+        using var tape = ComputationTapePool<double>.Rent(8192);
         var W1 = Wrap(tape, _W1);
         var b1 = Wrap(tape, _b1);
         var W2 = Wrap(tape, _W2);
@@ -58,7 +58,7 @@ public class MlpBenchmarks
         {
             var z = b1[j];
             for (int i = 0; i < Input; i++) z = z + W1[j * Input + i] * x[i];
-            h1[j] = ReverseMath<double>.Tanh(z);
+            h1[j] = ReverseFunctions<double>.Tanh(z);
         }
 
         var h2 = new Var<double>[Hidden];
@@ -66,7 +66,7 @@ public class MlpBenchmarks
         {
             var z = b2[j];
             for (int i = 0; i < Hidden; i++) z = z + W2[j * Hidden + i] * h1[i];
-            h2[j] = ReverseMath<double>.Tanh(z);
+            h2[j] = ReverseFunctions<double>.Tanh(z);
         }
 
         var o = b3[0];
@@ -76,7 +76,7 @@ public class MlpBenchmarks
         return o.Value;
     }
 
-    private static Var<double>[] Wrap(Tape<double> tape, double[] vals)
+    private static Var<double>[] Wrap(ComputationTape<double> tape, double[] vals)
     {
         var arr = new Var<double>[vals.Length];
         for (int i = 0; i < vals.Length; i++) arr[i] = tape.Variable(vals[i]);
@@ -93,7 +93,7 @@ public class TapePoolBenchmarks
         int total = 0;
         for (int k = 0; k < 1000; k++)
         {
-            using var tape = TapePool<double>.Rent();
+            using var tape = ComputationTapePool<double>.Rent();
             var x = tape.Variable(1.0);
             var y = x * x + x;
             tape.Backward(y);
@@ -108,7 +108,7 @@ public class TapePoolBenchmarks
         int total = 0;
         for (int k = 0; k < 1000; k++)
         {
-            var tape = new Tape<double>();
+            var tape = new ComputationTape<double>();
             var x = tape.Variable(1.0);
             var y = x * x + x;
             tape.Backward(y);

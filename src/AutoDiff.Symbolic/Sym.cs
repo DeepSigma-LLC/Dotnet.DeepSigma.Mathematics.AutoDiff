@@ -3,33 +3,47 @@ using System.Numerics;
 namespace DeepSigma.Mathematics.AutoDiff.Symbolic;
 
 /// <summary>
-/// Factory helpers for building expression trees with a concise syntax.
+/// Factory methods for constructing symbolic expression trees with a concise syntax.
+/// </summary>
+/// <example>
 /// <code>
-/// var x = Sym.Var&lt;double&gt;("x");
-/// var f = Sym.Sin(x * x) + Sym.Exp(x);
+/// var x = SymbolicFactory.Variable&lt;double&gt;("x");
+/// var f = SymbolicFactory.Sin(x * x) + SymbolicFactory.Exp(x);
 /// var df = SymbolicDiff.Differentiate(f, "x");
 /// </code>
-/// </summary>
-public static class Sym
+/// </example>
+public static class SymbolicFactory
 {
-    public static VarExpr<T> Var<T>(string name) where T : IFloatingPoint<T> => new(name);
-    public static ConstExpr<T> Const<T>(T value) where T : IFloatingPoint<T> => new(value);
+    /// <summary>Creates a named variable leaf node.</summary>
+    /// <typeparam name="T">The scalar type for the expression tree.</typeparam>
+    /// <param name="name">The variable's identifier, used to look it up in the evaluation environment.</param>
+    public static VariableExpression<T> Variable<T>(string name) where T : IFloatingPoint<T> => new(name);
 
-    public static Expr<T> Sin<T>(Expr<T> x)
-        where T : IFloatingPoint<T>, ITrigonometricFunctions<T> => new SinExpr<T>(x);
+    /// <summary>Creates a constant leaf node with the given value.</summary>
+    /// <typeparam name="T">The scalar type for the expression tree.</typeparam>
+    /// <param name="value">The constant scalar value.</param>
+    public static ConstantExpression<T> Constant<T>(T value) where T : IFloatingPoint<T> => new(value);
 
-    public static Expr<T> Cos<T>(Expr<T> x)
-        where T : IFloatingPoint<T>, ITrigonometricFunctions<T> => new CosExpr<T>(x);
+    /// <summary>Creates a sine expression: sin(<paramref name="x"/>).</summary>
+    public static Expression<T> Sin<T>(Expression<T> x)
+        where T : IFloatingPoint<T>, ITrigonometricFunctions<T> => new SineExpression<T>(x);
 
-    public static Expr<T> Exp<T>(Expr<T> x)
+    /// <summary>Creates a cosine expression: cos(<paramref name="x"/>).</summary>
+    public static Expression<T> Cos<T>(Expression<T> x)
+        where T : IFloatingPoint<T>, ITrigonometricFunctions<T> => new CosineExpression<T>(x);
+
+    /// <summary>Creates a natural exponential expression: exp(<paramref name="x"/>).</summary>
+    public static Expression<T> Exp<T>(Expression<T> x)
         where T : IFloatingPoint<T>, IExponentialFunctions<T>, ILogarithmicFunctions<T>
-        => new ExpExpr<T>(x);
+        => new ExponentialExpression<T>(x);
 
-    public static Expr<T> Log<T>(Expr<T> x)
+    /// <summary>Creates a natural logarithm expression: log(<paramref name="x"/>).</summary>
+    public static Expression<T> Log<T>(Expression<T> x)
         where T : IFloatingPoint<T>, ILogarithmicFunctions<T>, IExponentialFunctions<T>
-        => new LogExpr<T>(x);
+        => new LogarithmExpression<T>(x);
 
-    public static Expr<T> Pow<T>(Expr<T> b, Expr<T> e)
+    /// <summary>Creates a power expression: <paramref name="b"/>^<paramref name="e"/>.</summary>
+    public static Expression<T> Pow<T>(Expression<T> b, Expression<T> e)
         where T : IFloatingPoint<T>, IPowerFunctions<T>, ILogarithmicFunctions<T>, IExponentialFunctions<T>
-        => new PowExpr<T>(b, e);
+        => new PowerExpression<T>(b, e);
 }

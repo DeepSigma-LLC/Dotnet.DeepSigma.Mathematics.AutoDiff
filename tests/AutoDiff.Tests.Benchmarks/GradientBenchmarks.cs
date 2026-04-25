@@ -25,7 +25,7 @@ public class GradientBenchmarks
     [Benchmark(Baseline = true)]
     public double[] Reverse_QuadraticGradient()
     {
-        using var tape = TapePool<double>.Rent(N * 2);
+        using var tape = ComputationTapePool<double>.Rent(N * 2);
         var vars = new Var<double>[N];
         for (int i = 0; i < N; i++) vars[i] = tape.Variable(_x[i]);
 
@@ -41,7 +41,7 @@ public class GradientBenchmarks
     [Benchmark]
     public double[] Reverse_NoPool()
     {
-        var tape = new Tape<double>(N * 2);
+        var tape = new ComputationTape<double>(N * 2);
         var vars = new Var<double>[N];
         for (int i = 0; i < N; i++) vars[i] = tape.Variable(_x[i]);
 

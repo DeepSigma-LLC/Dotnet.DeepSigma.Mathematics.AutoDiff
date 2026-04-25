@@ -24,7 +24,7 @@ for (int epoch = 0; epoch <= epochs; epoch++)
 
     for (int s = 0; s < X.Length; s++)
     {
-        using var tape = TapePool<double>.Rent(64);
+        using var tape = ComputationTapePool<double>.Rent(64);
         var pW1 = Wrap(tape, W1);
         var pb1 = Wrap(tape, b1);
         var pW2 = Wrap(tape, W2);
@@ -37,12 +37,12 @@ for (int epoch = 0; epoch <= epochs; epoch++)
         for (int j = 0; j < 4; j++)
         {
             var z = pW1[j * 2] * x0 + pW1[j * 2 + 1] * x1 + pb1[j];
-            h[j] = ReverseMath<double>.Tanh(z);
+            h[j] = ReverseFunctions<double>.Tanh(z);
         }
 
         var o = pb2[0];
         for (int j = 0; j < 4; j++) o = o + pW2[j] * h[j];
-        var sig = 1.0 / (1.0 + ReverseMath<double>.Exp(-o));
+        var sig = 1.0 / (1.0 + ReverseFunctions<double>.Exp(-o));
         var diff = sig - tape.Variable(Y[s]);
         var loss = diff * diff;
 
@@ -78,7 +78,7 @@ double Predict(double a, double b)
     return 1.0 / (1.0 + Math.Exp(-o));
 }
 
-static Var<double>[] Wrap(Tape<double> tape, double[] vals)
+static Var<double>[] Wrap(ComputationTape<double> tape, double[] vals)
 {
     var arr = new Var<double>[vals.Length];
     for (int i = 0; i < vals.Length; i++) arr[i] = tape.Variable(vals[i]);

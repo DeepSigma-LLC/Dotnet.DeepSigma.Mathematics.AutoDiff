@@ -64,9 +64,9 @@ public class ImplicitDiffTests
     public void Symbolic_DyDx_ForUnitCircle()
     {
         // Build F = x² + y² - 1 symbolically
-        var x = Sym.Var<double>("x");
-        var y = Sym.Var<double>("y");
-        var F = x * x + y * y - Sym.Const(1.0);
+        var x = SymbolicFactory.Variable<double>("x");
+        var y = SymbolicFactory.Variable<double>("y");
+        var F = x * x + y * y - SymbolicFactory.Constant(1.0);
 
         var dyDx = ImplicitDiff.DerivativeSymbolic<double>(F, "x", "y");
         // Evaluate at (0.6, 0.8)

@@ -6,8 +6,8 @@ public class DiagnosticsTests
     public void AD001_NonStaticMethod()
     {
         var src = """
-            using AutoDiff;
-            using AutoDiff.Reverse;
+            using DeepSigma.Mathematics.AutoDiff;
+            using DeepSigma.Mathematics.AutoDiff.Reverse;
             public partial class C
             {
                 [Differentiable]
@@ -22,8 +22,8 @@ public class DiagnosticsTests
     public void AD002_ContainerNotPartial()
     {
         var src = """
-            using AutoDiff;
-            using AutoDiff.Reverse;
+            using DeepSigma.Mathematics.AutoDiff;
+            using DeepSigma.Mathematics.AutoDiff.Reverse;
             public class C
             {
                 [Differentiable]
@@ -38,8 +38,8 @@ public class DiagnosticsTests
     public void AD003_NoParameters()
     {
         var src = """
-            using AutoDiff;
-            using AutoDiff.Reverse;
+            using DeepSigma.Mathematics.AutoDiff;
+            using DeepSigma.Mathematics.AutoDiff.Reverse;
             public partial class C
             {
                 [Differentiable]
@@ -54,7 +54,7 @@ public class DiagnosticsTests
     public void AD004_UnsupportedParameterType()
     {
         var src = """
-            using AutoDiff;
+            using DeepSigma.Mathematics.AutoDiff;
             public partial class C
             {
                 [Differentiable]
@@ -69,9 +69,9 @@ public class DiagnosticsTests
     public void AD005_MixedModes()
     {
         var src = """
-            using AutoDiff;
-            using AutoDiff.Reverse;
-            using AutoDiff.Forward;
+            using DeepSigma.Mathematics.AutoDiff;
+            using DeepSigma.Mathematics.AutoDiff.Reverse;
+            using DeepSigma.Mathematics.AutoDiff.Forward;
             public partial class C
             {
                 [Differentiable]
@@ -86,8 +86,8 @@ public class DiagnosticsTests
     public void AD006_InconsistentElementTypes()
     {
         var src = """
-            using AutoDiff;
-            using AutoDiff.Reverse;
+            using DeepSigma.Mathematics.AutoDiff;
+            using DeepSigma.Mathematics.AutoDiff.Reverse;
             public partial class C
             {
                 [Differentiable]
@@ -102,8 +102,8 @@ public class DiagnosticsTests
     public void AD007_RefParameter()
     {
         var src = """
-            using AutoDiff;
-            using AutoDiff.Reverse;
+            using DeepSigma.Mathematics.AutoDiff;
+            using DeepSigma.Mathematics.AutoDiff.Reverse;
             public partial class C
             {
                 [Differentiable]

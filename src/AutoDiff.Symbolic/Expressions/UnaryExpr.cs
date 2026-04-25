@@ -2,127 +2,164 @@ using System.Numerics;
 
 namespace DeepSigma.Mathematics.AutoDiff.Symbolic;
 
-public sealed record NegExpr<T>(Expr<T> Operand) : Expr<T> where T : IFloatingPoint<T>
+/// <summary>Represents the arithmetic negation of a sub-expression: −Operand.</summary>
+public sealed record NegateExpression<T>(Expression<T> Operand) : Expression<T> where T : IFloatingPoint<T>
 {
-    public override T Evaluate(IReadOnlyDictionary<string, T> env) => -Operand.Evaluate(env);
-    public override Expr<T> Differentiate(string v) => new NegExpr<T>(Operand.Differentiate(v));
+    /// <inheritdoc/>
+    public override T Evaluate(IReadOnlyDictionary<string, T> environment) => -Operand.Evaluate(environment);
 
-    public override Expr<T> Simplify()
+    /// <inheritdoc/>
+    public override Expression<T> Differentiate(string v) => new NegateExpression<T>(Operand.Differentiate(v));
+
+    /// <inheritdoc/>
+    public override Expression<T> Simplify()
     {
         var o = Operand.Simplify();
-        if (o is ConstExpr<T> c) return new ConstExpr<T>(-c.Value);
-        if (o is NegExpr<T> n) return n.Operand;                  // --x → x
-        return new NegExpr<T>(o);
+        if (o is ConstantExpression<T> c) return new ConstantExpression<T>(-c.Value);
+        if (o is NegateExpression<T> n) return n.Operand; // --x → x
+        return new NegateExpression<T>(o);
     }
 
+    /// <inheritdoc/>
     public override string ToString() => $"(-{Operand})";
 }
 
-public sealed record SinExpr<T>(Expr<T> Arg) : Expr<T>
+/// <summary>Represents the sine function applied to a sub-expression: sin(Arg).</summary>
+public sealed record SineExpression<T>(Expression<T> Arg) : Expression<T>
     where T : IFloatingPoint<T>, ITrigonometricFunctions<T>
 {
-    public override T Evaluate(IReadOnlyDictionary<string, T> env) => T.Sin(Arg.Evaluate(env));
-    public override Expr<T> Differentiate(string v)
-        => new MulExpr<T>(new CosExpr<T>(Arg), Arg.Differentiate(v));
+    /// <inheritdoc/>
+    public override T Evaluate(IReadOnlyDictionary<string, T> environment) => T.Sin(Arg.Evaluate(environment));
 
-    public override Expr<T> Simplify()
+    /// <inheritdoc/>
+    public override Expression<T> Differentiate(string v)
+        => new MultiplyExpression<T>(new CosineExpression<T>(Arg), Arg.Differentiate(v));
+
+    /// <inheritdoc/>
+    public override Expression<T> Simplify()
     {
         var a = Arg.Simplify();
-        if (a is ConstExpr<T> c) return new ConstExpr<T>(T.Sin(c.Value));
-        return new SinExpr<T>(a);
+        if (a is ConstantExpression<T> c) return new ConstantExpression<T>(T.Sin(c.Value));
+        return new SineExpression<T>(a);
     }
 
+    /// <inheritdoc/>
     public override string ToString() => $"sin({Arg})";
 }
 
-public sealed record CosExpr<T>(Expr<T> Arg) : Expr<T>
+/// <summary>Represents the cosine function applied to a sub-expression: cos(Arg).</summary>
+public sealed record CosineExpression<T>(Expression<T> Arg) : Expression<T>
     where T : IFloatingPoint<T>, ITrigonometricFunctions<T>
 {
-    public override T Evaluate(IReadOnlyDictionary<string, T> env) => T.Cos(Arg.Evaluate(env));
-    public override Expr<T> Differentiate(string v)
-        => new MulExpr<T>(new NegExpr<T>(new SinExpr<T>(Arg)), Arg.Differentiate(v));
+    /// <inheritdoc/>
+    public override T Evaluate(IReadOnlyDictionary<string, T> environment) => T.Cos(Arg.Evaluate(environment));
 
-    public override Expr<T> Simplify()
+    /// <inheritdoc/>
+    public override Expression<T> Differentiate(string v)
+        => new MultiplyExpression<T>(new NegateExpression<T>(new SineExpression<T>(Arg)), Arg.Differentiate(v));
+
+    /// <inheritdoc/>
+    public override Expression<T> Simplify()
     {
         var a = Arg.Simplify();
-        if (a is ConstExpr<T> c) return new ConstExpr<T>(T.Cos(c.Value));
-        return new CosExpr<T>(a);
+        if (a is ConstantExpression<T> c) return new ConstantExpression<T>(T.Cos(c.Value));
+        return new CosineExpression<T>(a);
     }
 
+    /// <inheritdoc/>
     public override string ToString() => $"cos({Arg})";
 }
 
-public sealed record ExpExpr<T>(Expr<T> Arg) : Expr<T>
+/// <summary>Represents the natural exponential function applied to a sub-expression: exp(Arg).</summary>
+public sealed record ExponentialExpression<T>(Expression<T> Arg) : Expression<T>
     where T : IFloatingPoint<T>, IExponentialFunctions<T>, ILogarithmicFunctions<T>
 {
-    public override T Evaluate(IReadOnlyDictionary<string, T> env) => T.Exp(Arg.Evaluate(env));
-    public override Expr<T> Differentiate(string v)
-        => new MulExpr<T>(new ExpExpr<T>(Arg), Arg.Differentiate(v));
+    /// <inheritdoc/>
+    public override T Evaluate(IReadOnlyDictionary<string, T> environment) => T.Exp(Arg.Evaluate(environment));
 
-    public override Expr<T> Simplify()
+    /// <inheritdoc/>
+    public override Expression<T> Differentiate(string v)
+        => new MultiplyExpression<T>(new ExponentialExpression<T>(Arg), Arg.Differentiate(v));
+
+    /// <inheritdoc/>
+    public override Expression<T> Simplify()
     {
         var a = Arg.Simplify();
-        if (a is ConstExpr<T> c) return new ConstExpr<T>(T.Exp(c.Value));
-        if (a is LogExpr<T> log) return log.Arg;   // exp(log(x)) → x
-        return new ExpExpr<T>(a);
+        if (a is ConstantExpression<T> c) return new ConstantExpression<T>(T.Exp(c.Value));
+        if (a is LogarithmExpression<T> log) return log.Arg; // exp(log(x)) → x
+        return new ExponentialExpression<T>(a);
     }
 
+    /// <inheritdoc/>
     public override string ToString() => $"exp({Arg})";
 }
 
-public sealed record LogExpr<T>(Expr<T> Arg) : Expr<T>
+/// <summary>Represents the natural logarithm function applied to a sub-expression: log(Arg).</summary>
+public sealed record LogarithmExpression<T>(Expression<T> Arg) : Expression<T>
     where T : IFloatingPoint<T>, ILogarithmicFunctions<T>, IExponentialFunctions<T>
 {
-    public override T Evaluate(IReadOnlyDictionary<string, T> env) => T.Log(Arg.Evaluate(env));
-    public override Expr<T> Differentiate(string v)
-        => new DivExpr<T>(Arg.Differentiate(v), Arg);
+    /// <inheritdoc/>
+    public override T Evaluate(IReadOnlyDictionary<string, T> environment) => T.Log(Arg.Evaluate(environment));
 
-    public override Expr<T> Simplify()
+    /// <inheritdoc/>
+    public override Expression<T> Differentiate(string v)
+        => new DivideExpression<T>(Arg.Differentiate(v), Arg);
+
+    /// <inheritdoc/>
+    public override Expression<T> Simplify()
     {
         var a = Arg.Simplify();
-        if (a is ConstExpr<T> c) return new ConstExpr<T>(T.Log(c.Value));
-        if (a is ExpExpr<T> e) return e.Arg;   // log(exp(x)) → x
-        return new LogExpr<T>(a);
+        if (a is ConstantExpression<T> c) return new ConstantExpression<T>(T.Log(c.Value));
+        if (a is ExponentialExpression<T> e) return e.Arg; // log(exp(x)) → x
+        return new LogarithmExpression<T>(a);
     }
 
+    /// <inheritdoc/>
     public override string ToString() => $"log({Arg})";
 }
 
-public sealed record PowExpr<T>(Expr<T> Base, Expr<T> Exponent) : Expr<T>
+/// <summary>
+/// Represents exponentiation with both base and exponent as sub-expressions: Base ^ Exponent.
+/// </summary>
+public sealed record PowerExpression<T>(Expression<T> Base, Expression<T> Exponent) : Expression<T>
     where T : IFloatingPoint<T>, IPowerFunctions<T>, ILogarithmicFunctions<T>, IExponentialFunctions<T>
 {
-    public override T Evaluate(IReadOnlyDictionary<string, T> env)
-        => T.Pow(Base.Evaluate(env), Exponent.Evaluate(env));
+    /// <inheritdoc/>
+    public override T Evaluate(IReadOnlyDictionary<string, T> environment)
+        => T.Pow(Base.Evaluate(environment), Exponent.Evaluate(environment));
 
-    public override Expr<T> Differentiate(string v)
+    /// <inheritdoc/>
+    public override Expression<T> Differentiate(string v)
     {
         // d/dv[b^e] = b^e * (e' * log(b) + e * b'/b)
         var db = Base.Differentiate(v);
         var de = Exponent.Differentiate(v);
-        var term1 = new MulExpr<T>(de, new LogExpr<T>(Base));
-        var term2 = new MulExpr<T>(Exponent, new DivExpr<T>(db, Base));
-        return new MulExpr<T>(this, new AddExpr<T>(term1, term2));
+        var term1 = new MultiplyExpression<T>(de, new LogarithmExpression<T>(Base));
+        var term2 = new MultiplyExpression<T>(Exponent, new DivideExpression<T>(db, Base));
+        return new MultiplyExpression<T>(this, new AddExpression<T>(term1, term2));
     }
 
-    public override Expr<T> Simplify()
+    /// <inheritdoc/>
+    public override Expression<T> Simplify()
     {
         var b = Base.Simplify();
         var e = Exponent.Simplify();
 
-        if (e is ConstExpr<T> ec)
+        if (e is ConstantExpression<T> ec)
         {
-            if (ec.Value == T.Zero) return new ConstExpr<T>(T.One);    // x^0 → 1
-            if (ec.Value == T.One) return b;                            // x^1 → x
+            if (ec.Value == T.Zero) return new ConstantExpression<T>(T.One);
+            if (ec.Value == T.One) return b;
         }
-        if (b is ConstExpr<T> bc)
+        if (b is ConstantExpression<T> bc)
         {
-            if (bc.Value == T.Zero) return new ConstExpr<T>(T.Zero);    // 0^x → 0
-            if (bc.Value == T.One) return new ConstExpr<T>(T.One);      // 1^x → 1
-            if (e is ConstExpr<T> ec2)
-                return new ConstExpr<T>(T.Pow(bc.Value, ec2.Value));    // fold
+            if (bc.Value == T.Zero) return new ConstantExpression<T>(T.Zero);
+            if (bc.Value == T.One) return new ConstantExpression<T>(T.One);
+            if (e is ConstantExpression<T> ec2)
+                return new ConstantExpression<T>(T.Pow(bc.Value, ec2.Value));
         }
-        return new PowExpr<T>(b, e);
+        return new PowerExpression<T>(b, e);
     }
 
+    /// <inheritdoc/>
     public override string ToString() => $"({Base}^{Exponent})";
 }

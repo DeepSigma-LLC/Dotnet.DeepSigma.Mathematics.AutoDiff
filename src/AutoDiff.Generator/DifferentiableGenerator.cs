@@ -9,11 +9,21 @@ using Microsoft.CodeAnalysis.Text;
 namespace DeepSigma.Mathematics.AutoDiff.Generator;
 
 /// <summary>
-/// Emits <c>Grad_Foo</c> wrappers for methods annotated with <c>[Differentiable]</c>.
-/// The attributed method takes <c>Var&lt;T&gt;</c> (reverse) or <c>DualNumber&lt;T&gt;</c> (forward)
-/// parameters and returns the same type. The generator emits a sibling that takes plain
-/// <c>T</c> parameters, drives the tape/dual seeding, and returns the gradient tuple.
+/// Roslyn incremental source generator that emits <c>Grad_Foo</c> gradient wrappers for
+/// methods annotated with <c>[Differentiable]</c>.
 /// </summary>
+/// <remarks>
+/// The annotated method accepts <c>Var&lt;T&gt;</c> parameters (reverse mode) or
+/// <c>DualNumber&lt;T&gt;</c> parameters (forward mode) and returns the same type.
+/// The generator emits a same-class <c>Grad_Foo</c> sibling that accepts plain <c>T</c>
+/// parameters, drives the tape or dual-number seeding internally, and returns the gradient
+/// as a scalar <c>T</c> (single parameter) or a named value tuple of <c>T</c> components
+/// (multiple parameters).
+/// <para>
+/// Diagnostic rules <c>AD001</c>–<c>AD008</c> are reported as errors at the annotated method site
+/// for any configuration that the generator cannot handle; see <see cref="Diagnostics"/> for details.
+/// </para>
+/// </remarks>
 [Generator]
 public sealed class DifferentiableGenerator : IIncrementalGenerator
 {
@@ -35,8 +45,11 @@ public sealed class DifferentiableGenerator : IIncrementalGenerator
     private const string VarTypeName = "DeepSigma.Mathematics.AutoDiff.Reverse.Var<T>";
     private const string DualTypeName = "DeepSigma.Mathematics.AutoDiff.Forward.DualNumber<T>";
 
+    /// <inheritdoc/>
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
+        // Inject the [Differentiable] attribute and DiffMode enum into every compilation
+        // so consumers do not need a separate attribute package reference.
         context.RegisterPostInitializationOutput(ctx =>
             ctx.AddSource("DifferentiableAttribute.g.cs", SourceText.From(AttributeSource, Encoding.UTF8)));
 
@@ -54,6 +67,11 @@ public sealed class DifferentiableGenerator : IIncrementalGenerator
         });
     }
 
+    /// <summary>
+    /// Validates a single <c>[Differentiable]</c>-annotated method and, if valid, returns
+    /// the <see cref="Target"/> descriptor used by the emit step.
+    /// All diagnostic failures are collected and returned alongside a <see langword="null"/> target.
+    /// </summary>
     private static AnalysisResult Analyze(GeneratorAttributeSyntaxContext ctx)
     {
         var diagnostics = new List<DiagnosticInfo>();
@@ -141,7 +159,7 @@ public sealed class DifferentiableGenerator : IIncrementalGenerator
             paramNames.Add(p.Name);
         }
 
-        // AD008: declared Mode vs. detected mode mismatch
+        // AD008: declared Mode vs. inferred mode mismatch
         var declaredMode = ReadModeFromAttribute(ctx);
         if (paramsOk && mode is not null && declaredMode is not null && declaredMode != mode)
             diagnostics.Add(new DiagnosticInfo(Diagnostics.ModeMismatch, methodLocation, method.Name, declaredMode, mode));
@@ -162,6 +180,10 @@ public sealed class DifferentiableGenerator : IIncrementalGenerator
         return new AnalysisResult(target, diagnostics.ToImmutableArray());
     }
 
+    /// <summary>
+    /// Reads the explicit <c>Mode</c> property from the <c>[Differentiable]</c> attribute, if present.
+    /// Returns <see langword="null"/> when the attribute does not specify a mode (defaulting to Reverse).
+    /// </summary>
     private static string? ReadModeFromAttribute(GeneratorAttributeSyntaxContext ctx)
     {
         if (ctx.Attributes.Length == 0) return null;
@@ -171,6 +193,10 @@ public sealed class DifferentiableGenerator : IIncrementalGenerator
         return null;
     }
 
+    /// <summary>
+    /// Writes the generated source file for a validated <see cref="Target"/>,
+    /// delegating to <see cref="EmitReverse"/> or <see cref="EmitForward"/> based on the detected mode.
+    /// </summary>
     private static void Emit(SourceProductionContext spc, Target t)
     {
         var methodBody = t.Mode == "Reverse" ? EmitReverse(t) : EmitForward(t);
@@ -193,6 +219,11 @@ public sealed class DifferentiableGenerator : IIncrementalGenerator
             SourceText.From(source, Encoding.UTF8));
     }
 
+    /// <summary>
+    /// Emits a <c>Grad_Foo</c> method body that uses a reverse-mode <c>ComputationTape</c>
+    /// to compute all input gradients in a single backward pass.
+    /// Returns a scalar <c>T</c> for single-parameter methods or a named value tuple for multi-parameter methods.
+    /// </summary>
     private static string EmitReverse(Target t)
     {
         var n = t.ParamNames.Length;
@@ -210,7 +241,7 @@ public sealed class DifferentiableGenerator : IIncrementalGenerator
         return $$"""
                 public static {{returnType}} Grad_{{gradName}}({{paramList}})
                 {
-                    using var __tape = TapePool<{{T}}>.Rent();
+                    using var __tape = ComputationTapePool<{{T}}>.Rent();
                     {{varDecls}}
                     var __result = {{t.MethodName}}({{args}});
                     __tape.Backward(__result);
@@ -220,6 +251,11 @@ public sealed class DifferentiableGenerator : IIncrementalGenerator
             """;
     }
 
+    /// <summary>
+    /// Emits a <c>Grad_Foo</c> method body that uses forward-mode dual numbers,
+    /// running one pass per input variable with a unit seed vector to collect all partial derivatives.
+    /// Returns a scalar <c>T</c> for single-parameter methods or a named value tuple for multi-parameter methods.
+    /// </summary>
     private static string EmitForward(Target t)
     {
         var n = t.ParamNames.Length;
@@ -251,6 +287,10 @@ public sealed class DifferentiableGenerator : IIncrementalGenerator
             """;
     }
 
+    /// <summary>
+    /// Returns typed numeric literals for seeding dual numbers with 1 and 0.
+    /// Avoids unnecessary casts for the common scalar types.
+    /// </summary>
     private static (string one, string zero) LiteralsFor(string elemType) => elemType switch
     {
         "double" => ("1.0", "0.0"),
@@ -259,27 +299,51 @@ public sealed class DifferentiableGenerator : IIncrementalGenerator
         _ => ($"(({elemType})1)", $"(({elemType})0)")
     };
 
+    /// <summary>
+    /// Strips the <c>_Differentiable</c> suffix from a method name if present,
+    /// allowing methods to be named <c>Foo_Differentiable</c> to avoid collisions
+    /// while the generated gradient wrapper is named <c>Grad_Foo</c>.
+    /// </summary>
     private static string StripSuffix(string name)
     {
         const string suffix = "_Differentiable";
         return name.EndsWith(suffix) ? name.Substring(0, name.Length - suffix.Length) : name;
     }
 
+    // ── Private supporting types ─────────────────────────────────────────────
+
+    /// <summary>Pairs an optional emit target with any diagnostics collected during analysis.</summary>
     private sealed record AnalysisResult(Target? Target, ImmutableArray<DiagnosticInfo> Diagnostics);
 
+    /// <summary>
+    /// Captures everything the emit step needs about a single validated <c>[Differentiable]</c> method.
+    /// </summary>
     private sealed record Target(
+        /// <summary>The containing namespace, or <see langword="null"/> for the global namespace.</summary>
         string? Namespace,
+        /// <summary>The simple name of the containing type.</summary>
         string ClassName,
+        /// <summary>The type keyword: <c>class</c>, <c>struct</c>, or <c>record</c>.</summary>
         string ClassKeyword,
+        /// <summary><see langword="true"/> when the containing type is declared <c>static</c>.</summary>
         bool IsStatic,
+        /// <summary>The name of the annotated method (before suffix stripping).</summary>
         string MethodName,
+        /// <summary>The fully-qualified scalar element type, e.g. <c>double</c>.</summary>
         string ElementType,
+        /// <summary>Ordered list of parameter names, used to generate variable declarations and the return tuple.</summary>
         ImmutableArray<string> ParamNames,
+        /// <summary><c>"Reverse"</c> or <c>"Forward"</c>, inferred from the parameter types.</summary>
         string Mode);
 }
 
+/// <summary>
+/// Captures source location information for a Roslyn symbol in a form that can be stored
+/// in an incremental pipeline step without retaining the full Roslyn object graph.
+/// </summary>
 internal sealed record LocationInfo(string FilePath, TextSpan TextSpan, LinePositionSpan LineSpan)
 {
+    /// <summary>Creates a <see cref="LocationInfo"/> from the primary source location of <paramref name="symbol"/>.</summary>
     public static LocationInfo From(ISymbol symbol)
     {
         var loc = symbol.Locations.FirstOrDefault() ?? Location.None;
@@ -289,19 +353,27 @@ internal sealed record LocationInfo(string FilePath, TextSpan TextSpan, LinePosi
             loc.GetLineSpan().Span);
     }
 
+    /// <summary>Reconstructs a Roslyn <see cref="Location"/> from the stored path and span data.</summary>
     public Location ToLocation() => string.IsNullOrEmpty(FilePath)
         ? Location.None
         : Location.Create(FilePath, TextSpan, LineSpan);
 }
 
+/// <summary>
+/// A serialisable descriptor for a diagnostic to report, decoupled from Roslyn's
+/// <see cref="Diagnostic"/> type so it can be safely cached by the incremental pipeline.
+/// </summary>
 internal sealed record DiagnosticInfo(DiagnosticDescriptor Descriptor, LocationInfo Location, params object?[] Args)
 {
+    /// <summary>Materialises a Roslyn <see cref="Diagnostic"/> from this descriptor.</summary>
     public Diagnostic ToDiagnostic() => Diagnostic.Create(Descriptor, Location.ToLocation(), Args);
 
+    /// <inheritdoc/>
     public bool Equals(DiagnosticInfo? other) =>
         other is not null && Descriptor.Id == other.Descriptor.Id && Location == other.Location
         && Args.SequenceEqual(other.Args);
 
+    /// <inheritdoc/>
     public override int GetHashCode()
     {
         unchecked

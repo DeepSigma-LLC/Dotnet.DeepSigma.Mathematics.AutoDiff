@@ -5,53 +5,84 @@ using DeepSigma.Mathematics.AutoDiff.Core;
 namespace DeepSigma.Mathematics.AutoDiff.Reverse;
 
 /// <summary>
-/// Records a forward computation and runs the reverse (backward) pass to accumulate gradients.
+/// Records a forward computation graph and runs the reverse (backward) pass to accumulate gradients.
 /// Nodes are stored in a flat array for cache-coherent backward sweep.
 /// </summary>
-public sealed class Tape<T> : ITape<T>, IDisposable
+/// <remarks>
+/// Typical usage:
+/// <code>
+/// using var tape = ComputationTapePool&lt;double&gt;.Rent();
+/// var x = tape.Variable(3.0, "x");
+/// var y = tape.Variable(4.0, "y");
+/// var z = ReverseFunctions&lt;double&gt;.Sin(x) * y;
+/// tape.Backward(z);
+/// double dz_dx = x.Gradient;
+/// </code>
+/// <see cref="ComputationTape{T}"/> implements <see cref="IDisposable"/>; disposing it returns the instance
+/// to the <see cref="ComputationTapePool{T}"/> for reuse.
+/// </remarks>
+/// <typeparam name="T">A floating-point scalar type that implements <see cref="IFloatingPoint{T}"/>.</typeparam>
+public sealed class ComputationTape<T> : IComputationTape<T>, IDisposable
     where T : IFloatingPoint<T>
 {
     private const int DefaultDiagnosticDepth = 8;
 
-    private TapeNode<T>[] _nodes;
+    private ComputationTapeNode<T>[] _nodes;
     private int _count;
     private bool _disposed;
 
+    /// <summary>
+    /// When <see langword="true"/>, the backward pass throws <see cref="GradientNaNException"/>
+    /// if a gradient contribution is NaN or infinity.
+    /// </summary>
     public bool EnableNaNGuard { get; set; }
+
+    /// <summary>
+    /// When <see langword="true"/>, a full <see cref="GradientDiagnostics"/> tree is attached to any
+    /// <see cref="GradientNaNException"/> thrown during the backward pass. Has no effect when
+    /// <see cref="EnableNaNGuard"/> is <see langword="false"/>.
+    /// </summary>
     public bool EnableDiagnostics { get; set; }
 
+    /// <summary>The number of nodes currently recorded on the tape.</summary>
     public int NodeCount => _count;
 
-    public Tape(int initialCapacity = 256)
+    /// <summary>Initializes a new tape with the specified initial node-array capacity.</summary>
+    /// <param name="initialCapacity">Starting capacity for the internal node array. Doubles on overflow.</param>
+    public ComputationTape(int initialCapacity = 256)
     {
-        _nodes = new TapeNode<T>[initialCapacity];
+        _nodes = new ComputationTapeNode<T>[initialCapacity];
     }
 
     // ── Variable registration ────────────────────────────────────────────────
 
+    /// <summary>
+    /// Registers a new leaf variable on the tape and returns the corresponding <see cref="Var{T}"/>.
+    /// </summary>
+    /// <param name="value">The primal value of the variable.</param>
+    /// <param name="name">Optional debug name shown in diagnostic trees and the debugger display.</param>
     public Var<T> Variable(T value, string? name = null)
     {
-        var id = Append(TapeNode<T>.Leaf(_count, value, name));
+        var id = Append(ComputationTapeNode<T>.Leaf(_count, value, name));
         return new Var<T>(this, id);
     }
 
-    // ── Recording ops (called by Var<T> operators and ReverseMath) ───────────
+    // ── Recording ops (called by Var<T> operators and ReverseFunctions) ──────
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal Var<T> RecordUnary(int inputId, T primal, T weight)
     {
-        var id = Append(TapeNode<T>.Unary(_count, inputId, primal, weight));
+        var id = Append(ComputationTapeNode<T>.Unary(_count, inputId, primal, weight));
         return new Var<T>(this, id);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal Var<T> RecordBinary(int in0, int in1, T primal, T w0, T w1)
     {
-        var id = Append(TapeNode<T>.Binary(_count, in0, in1, primal, w0, w1));
+        var id = Append(ComputationTapeNode<T>.Binary(_count, in0, in1, primal, w0, w1));
         return new Var<T>(this, id);
     }
 
-    // Specific ops (called by Var<T> operator overloads)
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal Var<T> RecordAdd(Var<T> a, Var<T> b)
         => RecordBinary(a.NodeId, b.NodeId, a.Value + b.Value, T.One, T.One);
@@ -77,7 +108,6 @@ public sealed class Tape<T> : ITape<T>, IDisposable
     internal Var<T> RecordNeg(Var<T> a)
         => RecordUnary(a.NodeId, -a.Value, -T.One);
 
-    // Scalar arithmetic — avoids creating a constant leaf node for the scalar operand.
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal Var<T> RecordAddScalar(Var<T> a, T b) => RecordUnary(a.NodeId, a.Value + b, T.One);
 
@@ -101,15 +131,23 @@ public sealed class Tape<T> : ITape<T>, IDisposable
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal T GetPrimal(int nodeId) => _nodes[nodeId].Primal;
 
+    /// <inheritdoc/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public T GetGradient(int nodeId) => _nodes[nodeId].Gradient;
 
     // ── Backward pass ────────────────────────────────────────────────────────
 
-    /// <summary>Run the reverse sweep from a scalar output variable.</summary>
+    /// <summary>
+    /// Runs the reverse sweep from a scalar output variable, seeding its gradient to 1.
+    /// Gradients for all ancestor nodes are accumulated via the chain rule.
+    /// </summary>
+    /// <param name="output">The scalar output variable to differentiate.</param>
     public void Backward(Var<T> output) => Backward(output.NodeId);
 
-    /// <summary>Run the reverse sweep from a scalar output node.</summary>
+    /// <summary>
+    /// Runs the reverse sweep from a scalar output node, seeding its gradient to 1.
+    /// </summary>
+    /// <param name="outputNodeId">Index of the output node in the tape's node array.</param>
     public void Backward(int outputNodeId)
     {
         ZeroGradients();
@@ -118,9 +156,11 @@ public sealed class Tape<T> : ITape<T>, IDisposable
     }
 
     /// <summary>
-    /// Run the reverse sweep seeding multiple output variables with the given cotangent values.
-    /// Used by VJP to compute v^T · J(f) in a single pass.
+    /// Runs the reverse sweep seeding multiple output variables with explicit cotangent values.
+    /// Computes v^T · J in a single backward pass; used internally by VJP.
     /// </summary>
+    /// <param name="outputs">The output variables to seed.</param>
+    /// <param name="seeds">Cotangent values — one per output variable.</param>
     public void BackwardWithSeed(Var<T>[] outputs, T[] seeds)
     {
         var ids = new int[outputs.Length];
@@ -130,8 +170,10 @@ public sealed class Tape<T> : ITape<T>, IDisposable
     }
 
     /// <summary>
-    /// Run the reverse sweep seeding multiple output nodes with the given cotangent values.
+    /// Runs the reverse sweep seeding multiple output nodes with explicit cotangent values.
     /// </summary>
+    /// <param name="outputNodeIds">Indices of the output nodes to seed.</param>
+    /// <param name="seeds">Cotangent values — one per output node.</param>
     public void BackwardWithSeed(int[] outputNodeIds, T[] seeds)
     {
         ZeroGradients();
@@ -168,9 +210,12 @@ public sealed class Tape<T> : ITape<T>, IDisposable
     }
 
     /// <summary>
-    /// Build a diagnostic tree rooted at the given node, walking its forward-graph inputs recursively.
-    /// Depth is capped to prevent runaway trees on large computations.
+    /// Builds a <see cref="GradientDiagnostics"/> tree rooted at the given node by walking
+    /// the forward-graph inputs recursively. Depth is capped to prevent runaway trees on
+    /// large computations.
     /// </summary>
+    /// <param name="nodeId">The root node to start from.</param>
+    /// <param name="maxDepth">Maximum recursion depth (default 8).</param>
     public GradientDiagnostics BuildDiagnostic(int nodeId, int maxDepth = DefaultDiagnosticDepth)
         => BuildDiagnosticRecursive(nodeId, maxDepth);
 
@@ -199,7 +244,7 @@ public sealed class Tape<T> : ITape<T>, IDisposable
         };
     }
 
-    private static string DescribeNode(ref TapeNode<T> node)
+    private static string DescribeNode(ref ComputationTapeNode<T> node)
     {
         if (node.Input0 < 0) return "leaf";
         if (node.Input1 < 0) return "unary";
@@ -208,33 +253,36 @@ public sealed class Tape<T> : ITape<T>, IDisposable
 
     // ── Memory management ────────────────────────────────────────────────────
 
-    /// <summary>Zero all gradient slots while preserving primal values and structure.</summary>
+    /// <inheritdoc/>
     public void ZeroGradients()
     {
         for (int i = 0; i < _count; i++)
             _nodes[i].Gradient = T.Zero;
     }
 
-    /// <summary>Reset the tape to empty, reusing the allocated array.</summary>
+    /// <inheritdoc/>
     public void Reset()
     {
         _count = 0;
     }
 
+    /// <summary>
+    /// Resets the tape and returns it to the <see cref="ComputationTapePool{T}"/> for reuse.
+    /// </summary>
     public void Dispose()
     {
         if (!_disposed)
         {
             _disposed = true;
             Reset();
-            TapePool<T>.Return(this);
+            ComputationTapePool<T>.Return(this);
         }
     }
 
     // ── Internal helpers ─────────────────────────────────────────────────────
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private int Append(TapeNode<T> node)
+    private int Append(ComputationTapeNode<T> node)
     {
         if (_count == _nodes.Length)
             Array.Resize(ref _nodes, _nodes.Length * 2);

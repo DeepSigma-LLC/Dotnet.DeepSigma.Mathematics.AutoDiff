@@ -1,6 +1,6 @@
 namespace DeepSigma.Mathematics.AutoDiff.JVP;
 
-internal static class JvpHelpers
+internal static class JacobianHelpers
 {
     internal static void ValidateLengths(string param1, int len1, string param2, int len2)
     {

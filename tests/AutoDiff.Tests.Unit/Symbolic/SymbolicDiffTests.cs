@@ -11,7 +11,7 @@ public class SymbolicDiffTests
     [Fact]
     public void Derivative_OfXSquared_Is2X()
     {
-        var x = Sym.Var<double>("x");
+        var x = SymbolicFactory.Variable<double>("x");
         var d = SymbolicDiff.Differentiate(x * x, "x");
         for (double v = -2.0; v <= 2.0; v += 0.5)
             Assert.Equal(2 * v, d.Evaluate(Env(("x", v))), 10);
@@ -20,16 +20,16 @@ public class SymbolicDiffTests
     [Fact]
     public void Derivative_OfSin_IsCos()
     {
-        var x = Sym.Var<double>("x");
-        var d = SymbolicDiff.Differentiate(Sym.Sin(x), "x");
+        var x = SymbolicFactory.Variable<double>("x");
+        var d = SymbolicDiff.Differentiate(SymbolicFactory.Sin(x), "x");
         Assert.Equal(Math.Cos(0.7), d.Evaluate(Env(("x", 0.7))), 10);
     }
 
     [Fact]
     public void ChainRule_SinOfXSquared()
     {
-        var x = Sym.Var<double>("x");
-        var d = SymbolicDiff.Differentiate(Sym.Sin(x * x), "x");
+        var x = SymbolicFactory.Variable<double>("x");
+        var d = SymbolicDiff.Differentiate(SymbolicFactory.Sin(x * x), "x");
         // d/dx sin(x²) = 2x cos(x²)
         var expected = 2 * 1.3 * Math.Cos(1.3 * 1.3);
         Assert.Equal(expected, d.Evaluate(Env(("x", 1.3))), 10);
@@ -38,8 +38,8 @@ public class SymbolicDiffTests
     [Fact]
     public void QuotientRule()
     {
-        var x = Sym.Var<double>("x");
-        var d = SymbolicDiff.Differentiate(Sym.Sin(x) / x, "x");
+        var x = SymbolicFactory.Variable<double>("x");
+        var d = SymbolicDiff.Differentiate(SymbolicFactory.Sin(x) / x, "x");
         // d/dx [sin(x)/x] = (cos(x)*x - sin(x))/x²
         var v = 1.5;
         var expected = (Math.Cos(v) * v - Math.Sin(v)) / (v * v);
@@ -49,9 +49,9 @@ public class SymbolicDiffTests
     [Fact]
     public void PartialDerivatives_Gradient()
     {
-        var x = Sym.Var<double>("x");
-        var y = Sym.Var<double>("y");
-        var f = x * x * y + Sym.Exp(y);
+        var x = SymbolicFactory.Variable<double>("x");
+        var y = SymbolicFactory.Variable<double>("y");
+        var f = x * x * y + SymbolicFactory.Exp(y);
         var grad = SymbolicDiff.Gradient(f, "x", "y");
 
         var env = Env(("x", 1.5), ("y", 0.3));
@@ -64,8 +64,8 @@ public class SymbolicDiffTests
     [Fact]
     public void MatchesFiniteDifference()
     {
-        var x = Sym.Var<double>("x");
-        var f = Sym.Exp(Sym.Sin(x)) + x * x * x;
+        var x = SymbolicFactory.Variable<double>("x");
+        var f = SymbolicFactory.Exp(SymbolicFactory.Sin(x)) + x * x * x;
         var d = SymbolicDiff.Differentiate(f, "x");
 
         for (double v = -1.0; v <= 1.0; v += 0.5)
