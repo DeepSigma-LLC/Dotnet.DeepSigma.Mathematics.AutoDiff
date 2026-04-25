@@ -9,7 +9,9 @@
       "Bash(dotnet run *)",
       "Bash(dotnet publish *)",
       "Bash(xargs -I {} bash -c 'echo \"=== {} ===\" && head -20 \"{}\"')",
-      "Bash(git mv *)"
+      "Bash(git mv *)",
+      "Bash(Tape\" /c/Users/brend/Desktop/GitHub/DeepSigmaRepos/Dotnet.DeepSigma.Claude.AutoDiff/README.md)",
+      "Bash(grep -n \"\\\\bTapePool\\\\b\\\\|\\\\bTape<\\\\|ExprInterpreter\\\\b\\\\|\\\\bDualMath\\\\b\\\\|\\\\bReverseMath\\\\b\\\\|\\\\bSym\\\\.\\\\|flat-array `Tape\" /c/Users/brend/Desktop/GitHub/DeepSigmaRepos/Dotnet.DeepSigma.Claude.AutoDiff/README.md)"
     ]
   }
 }

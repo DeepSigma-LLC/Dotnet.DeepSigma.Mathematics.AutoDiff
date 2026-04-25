@@ -13,7 +13,7 @@ Gradient-based optimization, neural-net experimentation, and scientific computin
 ## Features
 
 - **Forward mode** — `DualNumber<T>` for cheap directional derivatives and Jacobians of low-input/high-output functions.
-- **Reverse mode** — flat-array `Tape<T>` with cache-coherent backward sweep; ideal for many-input scalar functions (loss gradients, MLPs).
+- **Reverse mode** — flat-array `ComputationTape<T>` with cache-coherent backward sweep; ideal for many-input scalar functions (loss gradients, MLPs).
 - **Symbolic** — `Expression<T>` tree with algebraic simplifier, `SymbolicDiff.Differentiate`, and an AOT-safe interpreter.
 - **JVP / VJP primitives** — Jacobian-vector and vector-Jacobian products as first-class operations.
 - **Implicit differentiation** — `dy/dx` from a constraint `F(x, y) = 0` via the implicit function theorem.
@@ -31,7 +31,7 @@ Measured on an 11th Gen Core i7-11800H, .NET 10 RyuJIT (BenchmarkDotNet, short j
 |---|---|
 | Reverse vs Forward, Σxᵢ², N=1000 | **105×** faster reverse |
 | Reverse vs Forward, Σxᵢ², N=100 | **17.6×** faster reverse |
-| `TapePool` rent/return vs fresh allocation | **52×** faster, ~15× less allocation |
+| `ComputationTapePool` rent/return vs fresh allocation | **52×** faster, ~15× less allocation |
 | MLP forward+backward, 16-64-64-1 (~4400 params) | 111 µs / 85 KB / op |
 
 Run them yourself: `dotnet run -c Release --project tests/AutoDiff.Tests.Benchmarks -- --filter '*'`.
@@ -46,7 +46,7 @@ The library is split into focused packages so embedded / real-time consumers can
 |---|---|
 | `DeepSigma.Mathematics.AutoDiff.Core` | Interfaces, generic-math helpers, NaN/Inf guards, diagnostics |
 | `DeepSigma.Mathematics.AutoDiff.Forward` | `DualNumber<T>`, `DualFunctions<T>`, `ForwardDiff<T>`, `HyperDual<T>`, `HyperDualFunctions<T>` |
-| `DeepSigma.Mathematics.AutoDiff.Reverse` | `Tape<T>`, `Var<T>`, `ReverseFunctions<T>`, `TapePool<T>` |
+| `DeepSigma.Mathematics.AutoDiff.Reverse` | `ComputationTape<T>`, `Var<T>`, `ReverseFunctions<T>`, `ReverseDiff<T>`, `ComputationTapePool<T>` |
 | `DeepSigma.Mathematics.AutoDiff.Symbolic` | `Expression<T>` tree, `SymbolicFactory`, `SymbolicDiff`, `Simplifier`, `ExpressionInterpreter` |
 | `DeepSigma.Mathematics.AutoDiff.JVP` | `ForwardJacobian.Compute`, `ReverseJacobian.Compute`, `ReverseJacobian.Jacobian` |
 | `DeepSigma.Mathematics.AutoDiff.Implicit` | `ImplicitDiff.Derivative`, `Gradient`, `DerivativeSymbolic` |
@@ -89,7 +89,7 @@ For loss functions and any case where input dim ≫ output dim, reverse mode win
 ```csharp
 using DeepSigma.Mathematics.AutoDiff.Reverse;
 
-using var tape = TapePool<double>.Rent();
+using var tape = ComputationTapePool<double>.Rent();
 var x = tape.Variable(2.0, "x");
 var y = tape.Variable(3.0, "y");
 
@@ -201,7 +201,7 @@ var J = ReverseJacobian.Jacobian<double>(
 ### NaN / Inf guards with diagnostics
 
 ```csharp
-using var tape = new Tape<double>
+using var tape = new ComputationTape<double>
 {
     EnableNaNGuard = true,
     EnableDiagnostics = true
@@ -286,7 +286,7 @@ DeepSigma.Mathematics.AutoDiff.Generator   (analyzer-only; references Roslyn)
 src/
   AutoDiff.Core/         DeepSigma.Mathematics.AutoDiff.Core       — Interfaces, generic-math helpers, NaNGuard, diagnostics
   AutoDiff.Forward/      DeepSigma.Mathematics.AutoDiff.Forward     — DualNumber<T>, DualFunctions<T>, ForwardDiff<T>, HyperDual<T>, HyperDualFunctions<T>
-  AutoDiff.Reverse/      DeepSigma.Mathematics.AutoDiff.Reverse     — Tape<T>, Var<T>, ReverseFunctions<T>, TapePool<T>
+  AutoDiff.Reverse/      DeepSigma.Mathematics.AutoDiff.Reverse     — ComputationTape<T>, Var<T>, ReverseFunctions<T>, ReverseDiff<T>, ComputationTapePool<T>
   AutoDiff.Symbolic/     DeepSigma.Mathematics.AutoDiff.Symbolic    — Expression<T> tree, SymbolicFactory, SymbolicDiff, Simplifier, ExpressionInterpreter
   AutoDiff.JVP/          DeepSigma.Mathematics.AutoDiff.JVP         — ForwardJacobian.Compute, ReverseJacobian.Compute, ReverseJacobian.Jacobian
   AutoDiff.Implicit/     DeepSigma.Mathematics.AutoDiff.Implicit    — ImplicitDiff
@@ -308,7 +308,7 @@ samples/
 |---|---|
 | **`struct` for `DualNumber<T>` and `Var<T>`** | No heap allocation in tight loops; tape holds all mutable state. |
 | **Flat `TapeNode<T>[]` array** | Cache-coherent backward sweep — measurably faster than linked-list-of-objects layouts. |
-| **Thread-local `TapePool<T>`** | 52× cheaper than fresh allocation in the rent/return benchmark. |
+| **Thread-local `ComputationTapePool<T>`** | 52× cheaper than fresh allocation in the rent/return benchmark. |
 | **`record` for `Expression<T>`** | Structural equality drives the `Simplifier` fixed-point loop for free. |
 | **Generic over `IFloatingPoint<T>`** | Static abstract members → AOT-safe, no boxing, works with `double`/`float`/`Half`. |
 | **Delegation pattern in generator** | Body rewriting is fragile; delegating to a user-provided `Var<T>` overload makes the generator trivially correct. |
