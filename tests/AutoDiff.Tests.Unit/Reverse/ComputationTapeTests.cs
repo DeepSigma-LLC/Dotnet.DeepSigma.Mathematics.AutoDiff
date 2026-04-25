@@ -2,7 +2,7 @@ using DeepSigma.Mathematics.AutoDiff.Reverse;
 
 namespace DeepSigma.Mathematics.AutoDiff.Tests.UnitReverse;
 
-public class TapeTests
+public class ComputationTapeTests
 {
     [Fact]
     public void Variable_HasCorrectPrimal()
