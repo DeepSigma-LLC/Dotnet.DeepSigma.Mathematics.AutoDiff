@@ -10,6 +10,13 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Title>DeepSigma.Mathematics.AutoDiff.JVP</Title>
+    <Version>1.0.1</Version>
+    <Authors>DeepSigma LLC</Authors>
+    <Description>A dotnet package for auto differentiation and Jacobian vector products.</Description>
+    <PackageProjectUrl>https://github.com/DeepSigma-LLC/Dotnet.DeepSigma.Mathematics.AutoDiff</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/DeepSigma-LLC/Dotnet.DeepSigma.Mathematics.AutoDiff</RepositoryUrl>
+    <PackageIcon>Assets\DeepSigma.png</PackageIcon>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\AutoDiff.Core\DeepSigma.Mathematics.AutoDiff.Core.csproj" />
