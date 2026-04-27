@@ -15,4 +15,11 @@
     <ProjectReference Include="..\AutoDiff.Forward\DeepSigma.Mathematics.AutoDiff.Forward.csproj" />
     <ProjectReference Include="..\AutoDiff.Reverse\DeepSigma.Mathematics.AutoDiff.Reverse.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <None Update="Assets\DeepSigma.png">
+      <PackagePath>\</PackagePath>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Pack>True</Pack>
+    </None>
+  </ItemGroup>
 </Project>

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -9,11 +9,26 @@
     <RootNamespace>DeepSigma.Mathematics.AutoDiff.Implicit</RootNamespace>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Title>DeepSigma LLC</Title>
+    <Version>1.0.0.0</Version>
+    <Authors>DeepSigma LLC</Authors>
+    <Description>A dotnet library for implicit auto differentiation.</Description>
+    <PackageProjectUrl>https://github.com/DeepSigma-LLC/Dotnet.DeepSigma.Mathematics.AutoDiff</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/DeepSigma-LLC/Dotnet.DeepSigma.Mathematics.AutoDiff</RepositoryUrl>
+    <PackageIcon>Assets\DeepSigma.png</PackageIcon>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\AutoDiff.Core\DeepSigma.Mathematics.AutoDiff.Core.csproj" />
     <ProjectReference Include="..\AutoDiff.Forward\DeepSigma.Mathematics.AutoDiff.Forward.csproj" />
     <ProjectReference Include="..\AutoDiff.Reverse\DeepSigma.Mathematics.AutoDiff.Reverse.csproj" />
     <ProjectReference Include="..\AutoDiff.Symbolic\DeepSigma.Mathematics.AutoDiff.Symbolic.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Assets\DeepSigma.png">
+      <PackagePath>\</PackagePath>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Pack>True</Pack>
+    </None>
   </ItemGroup>
 </Project>
