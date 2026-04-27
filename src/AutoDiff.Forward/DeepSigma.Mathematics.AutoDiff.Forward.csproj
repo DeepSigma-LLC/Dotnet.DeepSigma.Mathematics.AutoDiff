@@ -14,7 +14,7 @@
     <Authors>DeepSigma LLC</Authors>
     <Description>A dotnet package for forward auto differentiation.</Description>
     <PackageProjectUrl>https://github.com/DeepSigma-LLC/Dotnet.DeepSigma.Mathematics.AutoDiff</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/DeepSigma-LLC/Dotnet.DeepSigma.Mathematics.AutoDiff.git</RepositoryUrl>
+    <RepositoryUrl>https://github.com/DeepSigma-LLC/Dotnet.DeepSigma.Mathematics.AutoDiff</RepositoryUrl>
     <PackageIcon>Assets\DeepSigma.png</PackageIcon>
   </PropertyGroup>
   <ItemGroup>
@@ -23,7 +23,6 @@
   <ItemGroup>
     <None Update="Assets\DeepSigma.png">
       <PackagePath>\</PackagePath>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Pack>True</Pack>
     </None>
   </ItemGroup>

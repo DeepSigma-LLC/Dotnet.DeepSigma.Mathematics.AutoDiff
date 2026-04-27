@@ -24,7 +24,6 @@
   <ItemGroup>
     <None Update="Assets\DeepSigma.png">
       <PackagePath>\</PackagePath>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Pack>True</Pack>
     </None>
   </ItemGroup>
